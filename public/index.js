@@ -13,17 +13,25 @@ async function getData() {
         if (Array.isArray(data) && data.length > 0) {
             let index = 0;
             data.forEach(item => {
+                // Creating the DOM
+                const date = new Date(item['joinDate']);
                 const addedDiv = document.createElement('div');
                 addedDiv.classList.add('addedDiv');
-                for (const key in item) {
-                    if (item.hasOwnProperty(key)) {
-                        const addP = document.createElement('p');
-                        addP.textContent = `${key}: ${item[key]}`;
-                        addedDiv.append(addP);
-
-
-                    }
-                }
+                const memberFirstName = document.createElement('p');
+                const memberEmail = document.createElement('p');
+                const memberJoinDate = document.createElement('p');
+                const memberPaymentMethod = document.createElement('p');
+                memberPaymentMethod.textContent = `Member Payment Method: ${item['paymentMethods']}`;
+                memberFirstName.textContent = `Member Name: ${item['fullName']}`;
+                memberEmail.textContent = `Member Email: ${item['email']}`;
+                memberJoinDate.textContent = `Join Date: ${date.toLocaleString()}`;
+                // Appending the DOM
+                addedDiv.appendChild(memberFirstName);
+                addedDiv.appendChild(memberEmail);
+                addedDiv.appendChild(memberJoinDate);
+                addedDiv.appendChild(memberJoinDate);
+                addedDiv.appendChild(memberPaymentMethod);
+                // Appending to the main div
                 myDiv.appendChild(addedDiv);
             })
         } else {

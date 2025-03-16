@@ -12,6 +12,7 @@ async function getData() {
         const myDiv = document.querySelector("#createdData");
         if (Array.isArray(data) && data.length > 0) {
             let index = 0;
+            document.querySelector("#dataFromSQL").textContent = "";
             data.forEach(item => {
                 // Creating the DOM
                 const date = new Date(item['joinDate']);

@@ -51,5 +51,21 @@ footer {
     background: #333;
     color: white;
     padding: 10px;
-    margin-top: 200px;
+    /* margin-top: 440px; */
+}
+
+.navigator {
+    margin-left: 100px;
+    color: blanchedalmond;
+
+}
+
+#navigationLinks {
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.mainPic img {
+    width: 100vh;
 }

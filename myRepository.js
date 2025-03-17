@@ -29,4 +29,17 @@ async function getPayMethod(methodPay) {
     }
 }
 
+
+
+async function members() {
+    try {
+        let pool = await sql.connect(config);
+        console.log('Connected to SQL Server');
+        return pool;
+    } catch (err) {
+        console.error('Database connection failed:', err);
+        throw err;
+    }
+}
+module.exports = { members, sql };
 module.exports.getPayMethod = getPayMethod;

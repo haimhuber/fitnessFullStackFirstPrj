@@ -41,5 +41,5 @@ async function members() {
         throw err;
     }
 }
-module.exports = { members, sql };
+module.exports = { members };
 module.exports.getPayMethod = getPayMethod;

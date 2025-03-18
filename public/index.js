@@ -53,21 +53,67 @@ async function showAllMembers() {
     const data = await response.json();
     console.log(data);
     const myDiv = document.querySelector("#createdData");
+    myDiv.classList.add('myDiv');
     myDiv.textContent = "";
     if (Array.isArray(data) && data.length > 0) {
         data.forEach(item => {
+            // Getting the join date 
+            const date = new Date(item['joinDate']);
+            // Creating the sub div to each member
             const addedDiv = document.createElement('div');
             addedDiv.classList.add('addedDiv');
+            // Creating member deatilas as a 'p'
             const memberFirstName = document.createElement('p');
             const memberEmail = document.createElement('p');
             const memberPhoneNumber = document.createElement('p');
+            const memberJoinDate = document.createElement('p');
             memberFirstName.textContent = `Member Name: ${item['fullName']}`;
             memberEmail.textContent = `Member Email: ${item['email']}`;
             memberPhoneNumber.textContent = `Member Phone Number: ${item['phoneNumber']}`;
+            memberJoinDate.textContent = `Member Join Date: ${date.toLocaleDateString()}`;
+            // Appending each member to the sub div
             addedDiv.appendChild(memberFirstName);
             addedDiv.appendChild(memberEmail);
             addedDiv.appendChild(memberPhoneNumber);
+            addedDiv.appendChild(memberJoinDate);
+            // Appending to the main div
             myDiv.appendChild(addedDiv);
         });
     }
+}
+
+
+
+async function sendForm(event) {
+    event.preventDefault();
+    // Collecting form data
+    const formData = {
+        firstname: document.getElementById('firstname').value,
+        email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value
+    };
+
+    // Convert formData to URL-encoded string
+    const urlEncodedData = new URLSearchParams(formData).toString();
+
+    try {
+        const response = await fetch('http://localhost:5500/contact-us', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // Sending as x-www-form-urlencoded
+            },
+            body: urlEncodedData // Sending as URL-encoded string
+        });
+
+        const data = await response.text(); // Get response as text
+        console.log(data);
+
+        // document.getElementById('responseMessage').innerText = data; // Show response
+    } catch (error) {
+        console.error('Error:', error);
+        // document.getElementById('responseMessage').innerText = 'Error sending message!';
+    }
+
+    window.location.href = 'http://127.0.0.1:5500/public/thankYou.html';  // Replace with your main page URL
 }

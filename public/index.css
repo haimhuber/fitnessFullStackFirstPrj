@@ -3,80 +3,118 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
+    background-color: #f4f4f4;
 }
 
 header {
     background: #333;
+    color: #fff;
+    padding: 15px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li {
+    color: #fff;
+    text-decoration: none;
+}
+
+#hero {
+    background: url('crossfit-bg.jpg') no-repeat center center/cover;
+    color: rgb(217, 50, 50);
+    padding: 50px 20px;
+}
+
+.btn {
+    display: inline-block;
+    background: #ff4500;
     color: white;
-    padding: 15px;
-    font-size: 24px;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
 }
 
-.hero {
-    background: url('fitness.jpg') no-repeat center/cover;
-    height: 50px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
+.btn:hover {
+    background: #4239ea;
 }
 
-.container {
-    padding: 20px;
-}
-
-#payButton:hover {
-    background-color: burlywood;
-    color: blue;
-    border-radius: 10px;
-
-}
-
-.boldText {
-    font-weight: 700;
-    font-size: larger;
-}
-
-#createdData {
-    text-align: start;
-
-}
-
-.addedDiv {
-    margin: 20px;
-    text-align: center;
-    border: 2px blue solid;
-    background-color: aliceblue;
-    border-radius: 50px;
-    padding: 5px;
-}
-
-.myDiv {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+section {
+    padding: 50px 20px;
 }
 
 footer {
     background: #333;
     color: white;
-    padding: 10px;
-    /* margin-top: 440px; */
+    padding: 20px;
 }
 
 .navigator {
-    margin-left: 100px;
-    color: blanchedalmond;
-
+    color: rgb(214, 208, 198);
+    font-size: large;
 }
 
-#navigationLinks {
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
+.highlight {
+    color: rgb(184, 29, 29);
+    font-size: large;
 }
 
-.mainPic img {
-    width: 100vh;
+
+/* Contact us CSS */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 50%;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #218838;
 }

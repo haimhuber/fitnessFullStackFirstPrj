@@ -1,3 +1,24 @@
+
+function highlight() {
+    let navItems = document.getElementsByClassName('navigator');
+    Array.from(navItems).forEach(item => {
+        item.addEventListener('click', function () {
+            console.log(navItems);
+            // Remove highlight from all items first
+            Array.from(navItems).forEach(nav => nav.classList.remove('highlight'));
+
+            // Add highlight only to the clicked item
+            this.classList.add('highlight');
+            const myDiv = document.querySelector("#class-from-db");
+            myDiv.textContent = "";
+        });
+    });
+
+    // Ensure function runs after the DOM has loaded
+
+}
+document.addEventListener('DOMContentLoaded', highlight);
+
 async function getData() {
     const paymentMethod = document.querySelector("#paymentText").value;
     if (!paymentMethod) {
@@ -48,37 +69,41 @@ async function getData() {
 }
 
 
-async function showAllMembers() {
-    const response = await fetch(`http://localhost:5500/members`);
-    const data = await response.json();
-    console.log(data);
-    const myDiv = document.querySelector("#createdData");
-    myDiv.classList.add('myDiv');
-    myDiv.textContent = "";
-    if (Array.isArray(data) && data.length > 0) {
-        data.forEach(item => {
-            // Getting the join date 
-            const date = new Date(item['joinDate']);
-            // Creating the sub div to each member
-            const addedDiv = document.createElement('div');
-            addedDiv.classList.add('addedDiv');
-            // Creating member deatilas as a 'p'
-            const memberFirstName = document.createElement('p');
-            const memberEmail = document.createElement('p');
-            const memberPhoneNumber = document.createElement('p');
-            const memberJoinDate = document.createElement('p');
-            memberFirstName.textContent = `Member Name: ${item['fullName']}`;
-            memberEmail.textContent = `Member Email: ${item['email']}`;
-            memberPhoneNumber.textContent = `Member Phone Number: ${item['phoneNumber']}`;
-            memberJoinDate.textContent = `Member Join Date: ${date.toLocaleDateString()}`;
-            // Appending each member to the sub div
-            addedDiv.appendChild(memberFirstName);
-            addedDiv.appendChild(memberEmail);
-            addedDiv.appendChild(memberPhoneNumber);
-            addedDiv.appendChild(memberJoinDate);
-            // Appending to the main div
-            myDiv.appendChild(addedDiv);
-        });
+async function showPlanDetalis() {
+    try {
+        const response = await fetch(`http://localhost:5500/plan`);
+        const data = await response.json();
+        console.log(data);
+        const myDiv = document.querySelector("#class-from-db");
+        // myDiv.classList.add('myDiv');
+        myDiv.textContent = "";
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(item => {
+                // Creating the sub div to each member
+                const addedDiv = document.createElement('div');
+                // addedDiv.classList.add('addedDiv');
+                // Creating member deatilas as a 'p'
+                const planName = document.createElement('p');
+                const description = document.createElement('p');
+                const freqPerWeek = document.createElement('p');
+                const price = document.createElement('p');
+                planName.textContent = `Plan Name: ${item['planName']}`;
+                description.textContent = `Plan Description: ${item['description']}`;
+                freqPerWeek.textContent = `Per Week: ${item['freqPerWeek']}`;
+                price.textContent = `Price: ${parseFloat(price)}`;
+                // Appending each member to the sub div
+                addedDiv.appendChild(planName);
+                addedDiv.appendChild(description);
+                addedDiv.appendChild(freqPerWeek);
+                addedDiv.appendChild(price);
+                // Appending to the main div
+                myDiv.appendChild(addedDiv);
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.querySelector("#dataFromSQL").textContent = 'Error fetching data from SQL server';
+
     }
 }
 

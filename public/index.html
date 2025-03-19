@@ -4,34 +4,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrossFit Gym</title>
     <link rel="stylesheet" href="index.css">
-    <title>Document</title>
 </head>
 
 <body>
-    <header>Fitness Club
-        <div id="navigationLinks">
-            <nav>
-                <a class="navigator" href="http://localhost:5500/home">Home</a>
-                <a onclick="showAllMembers(event)" class="navigator" href="#">Members</a>
-                <a class="navigator" href="http://localhost:5500/contact-page">Contact us</a>
-        </div>
+    <header>
+        <h1>CrossFit Powerhouse</h1>
+        <nav>
+            <ul>
+                <li><a class="navigator" href="http://localhost:5500/home">About</a></li>
+                <li><a onclick="showPlanDetalis()" class="navigator" href="#">Classes</a></li>
+                <li><a class="navigator" href="#">Testimonials</a></li>
+                <li><a class="navigator" href="http://localhost:5500/contact-page">Contact</a></li>
+            </ul>
+        </nav>
     </header>
+    <div id="main-content">
+        <section id="hero">
+            <h2>Unleash Your Potential</h2>
+            <p>Train hard. Get strong. Feel unstoppable.</p>
+            <a href="#" class="btn">Join Now</a>
+        </section>
 
-    </nav>
-    <div class="hero">Welcome to the Best Fitness Club</div>
-    <div class="container">
-        <h2>Our Services</h2>
-        <div class="services">
-            <input type="text" id="paymentText" placeholder="Type payment type">
-            <input id="payButton" type="button" value="Get Data" onclick="getData()">
-        </div>
-        <div id="createdData">
-        </div>
-        <p id="dataFromSQL"></p>
+        <section id="about">
+            <h2>About Us</h2>
+            <p>Welcome to CrossFit Powerhouse! Our expert coaches and supportive community will help you achieve your
+                fitness goals.</p>
+        </section>
+
+        <section id="classes">
+            <div id="class-from-db">
+
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <h2>What Our Members Say</h2>
+            <blockquote>"CrossFit Powerhouse changed my life! The workouts are amazing, and the community is even
+                better." -
+                Alex</blockquote>
+            <blockquote>"Best decision I've ever made for my fitness journey!" - Jamie</blockquote>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p>Email: contact@crossfitpowerhouse.com</p>
+            <p>Phone: (123) 456-7890</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 CrossFit Powerhouse. All rights reserved.</p>
+        </footer>
+
     </div>
-    <footer>&copy; 2025 Fitness Club. All Rights Reserved.</footer>
-
     <script src="index.js"></script>
 </body>
 

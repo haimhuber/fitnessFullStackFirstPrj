@@ -66,6 +66,30 @@ footer {
     font-size: large;
 }
 
+#class-from-db {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5%;
+}
+
+.flexDiv {
+    border: 2px blue solid;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    background-color: #a93d3d;
+}
+
+.joinUsClass {
+    width: 150px;
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    display: inline-block;
+}
+
 
 /* Contact us CSS */
 body {

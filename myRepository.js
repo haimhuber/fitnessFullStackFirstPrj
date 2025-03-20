@@ -12,26 +12,7 @@ const config = {
     }
 };
 
-async function getPayMethod(methodPay) {
-    try {
-        let pool = await sql.connect(config);
-        let result = await pool.request()
-            .input('MathodPay', sql.VarChar(50), methodPay)
-            .execute('spMethodPayByInput');
-
-        console.log(result.recordset);
-        return result.recordset;
-    } catch (err) {
-        console.log(err);
-        throw err;
-    } finally {
-        sql.close();
-    }
-}
-
-
-
-async function members() {
+async function connectionToSqlDB() {
     try {
         let pool = await sql.connect(config);
         console.log('Connected to SQL Server');
@@ -41,5 +22,26 @@ async function members() {
         throw err;
     }
 }
-module.exports = { members };
-module.exports.getPayMethod = getPayMethod;
+module.exports = { connectionToSqlDB };
+
+
+
+
+
+// async function getPayMethod(methodPay) {
+//     try {
+//         let pool = await sql.connect(config);
+//         let result = await pool.request()
+//             .input('MathodPay', sql.VarChar(50), methodPay)
+//             .execute('spMethodPayByInput');
+
+//         console.log(result.recordset);
+//         return result.recordset;
+//     } catch (err) {
+//         console.log(err);
+//         throw err;
+//     } finally {
+//         sql.close();
+//     }
+// }
+// module.exports.getPayMethod = getPayMethod;

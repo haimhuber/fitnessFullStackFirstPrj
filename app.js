@@ -3,11 +3,14 @@
 const express = require('express');
 const myRepository = require('./myRepository');
 const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, 'public')));
 const cors = require("cors");
-const { send } = require('process');
+const { log } = require('console');
+
 const port = process.env.PORT || 5500;
 app.use(cors());
 
@@ -18,10 +21,7 @@ app.get('/link-to-middlware-test/:id?', (req, res) => {
     } else {
         req.myError = { reason: 'Server down', isServer: true };
     }
-
     throw Error(); // Sending error to the middleware
-
-
 });
 
 //Home Page
@@ -33,7 +33,7 @@ app.get('/home', (req, res) => {
 app.get('/plan', async (req, res) => {
     const methodPay = req.query.table; // Get method from query parameter
     try {
-        const pool = await myRepository.members(); // Ensure connection is established
+        const pool = await myRepository.connectionToSqlDB(); // Ensure connection is established
         const result = await pool.request().query('SELECT * FROM WorkoutPlans'); // Fetch all records
         res.json(result.recordset); // Send data as JSON response
     } catch (err) {
@@ -42,16 +42,64 @@ app.get('/plan', async (req, res) => {
     }
 });
 
+// Go to contact - page
 app.get('/contact-page', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'contactUs.html'));
 });
 
 
-app.post('/contact-us', (req, res) => {
-    console.log(`all params:  ${JSON.stringify(req.body)}`);
-    res.send(`You sent a param named firstname, with value = ${req.body}`);
+// POST API to Insert Contact Form Data
+app.post('/contact', async (req, res) => {
+    const { name, email, subject, message } = req.body; // Get data from request body
+
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
+
+        // Insert query using parameterized inputs (to prevent SQL Injection)
+        await pool.request()
+            .input('name', name)
+            .input('email', email)
+            .input('subject', subject)
+            .input('message', message)
+            .query(`INSERT INTO ${req.body.table} (name, email, subject, message) VALUES (@name, @email, @subject, @message)`);
+
+        res.status(201).json({ message: 'Contact form submitted successfully!' });
+    } catch (err) {
+        console.error('Error inserting data:', err);
+        res.status(500).json({ error: 'Database insert error' });
+    }
 });
 
+app.post('/join-us', async (req, res) => {
+    const { fullName, email, phonenumber, dateOfBirth } = req.body; // Get data from request body
+
+    // Validate required fields
+    if (!fullName || !email || !phonenumber || !dateOfBirth) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
+
+        // Insert query using parameterized inputs (to prevent SQL Injection)
+        await pool.request()
+            .input('fullName', fullName)
+            .input('email', email)
+            .input('phonenumber', phonenumber)
+            .input('dateOfBirth', dateOfBirth)
+            .query(`INSERT INTO ${req.body.table} (fullName, email, phonenumber, dateOfBirth) VALUES (@fullName, @email, @phonenumber, @dateOfBirth)`);
+
+        res.status(201).json({ message: 'Member join successfully!' });
+    } catch (err) {
+        console.error('Error inserting data:', err);
+        res.status(500).json({ error: 'Database insert error' });
+    }
+});
 
 // Middleware handler
 app.use(function (err, req, res, next) {

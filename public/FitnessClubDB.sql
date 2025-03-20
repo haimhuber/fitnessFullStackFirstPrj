@@ -65,7 +65,7 @@ GO
 		email varchar(255) NOT NULL,
 		subject varchar(255) NOT NULL,
 		message varchar(255),
-		contactFormCreated DATE DEFAULT GETDATE()
+		contactFormCreated DATETIME DEFAULT GETDATE()
 	);
 	
 	CREATE TABLE ContactFormStatus (

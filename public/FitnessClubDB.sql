@@ -56,7 +56,7 @@ GO
 		email varchar(255) NOT NULL,
 		password   varchar(255) NOT NULL,
 		usreCreated DATE DEFAULT GETDATE(),
-		FOREIGN KEY (memberId) REFERENCES Members(id)
+		FOREIGN KEY (memberId) REFERENCES Members(id) ON DELETE CASCADE
 	);
 	
 	CREATE TABLE ContactForm (
@@ -73,7 +73,7 @@ GO
 		contactFormId INT NOT NULL,
 		status varchar(255) NOT NULL,
 		handleBy varchar(255) NOT NULL,
-		FOREIGN KEY (contactFormId ) REFERENCES ContactForm(id)
+		FOREIGN KEY (contactFormId ) REFERENCES ContactForm(id) ON DELETE CASCADE
 	);
 	
 
@@ -95,7 +95,7 @@ GO
 		trainerId INT,
 		specialization VARCHAR(255) NOT NULL,
 		startExperienceDate DATE NOT NULL,
-		FOREIGN KEY (trainerId) REFERENCES TrainersDetails(id)	
+		FOREIGN KEY (trainerId) REFERENCES TrainersDetails(id) ON DELETE CASCADE	 
 	);
 
 
@@ -107,7 +107,7 @@ GO
 		description varchar(1000),
 		freqPerWeek INT NOT NULL CHECK (freqPerWeek > 0 ) ,
 		price DECIMAL(10,2) NOT NULL,
-		FOREIGN KEY (trainerId) REFERENCES TrainersDetails(id)
+		FOREIGN KEY (trainerId) REFERENCES TrainersDetails(id) ON DELETE CASCADE
 	);
 
 	CREATE TABLE RegistrationToWorkoutPlans
@@ -116,8 +116,8 @@ GO
 		memberId INT NOT NULL,
 		planId INT NOT NULL,
 		startDate DATE DEFAULT GETDATE(),
-		FOREIGN KEY (memberId) REFERENCES Members(id),
-		FOREIGN KEY (planId) REFERENCES WorkoutPlans(id)
+		FOREIGN KEY (memberId) REFERENCES Members(id) ON DELETE CASCADE,
+		FOREIGN KEY (planId) REFERENCES WorkoutPlans(id) ON DELETE CASCADE
 	);
 
 	CREATE TABLE PaymentsDetails
@@ -127,7 +127,7 @@ GO
 		amount DECIMAL NOT NULL,
 		paymentMethods  VARCHAR(255) NOT NULL check (paymentMethods IN ('Credit Card', 'Paypal', 'Bank Transfer', 'Google Pay', 'Apple Pay')),
 		paymentVerification  VARCHAR(255) NOT NULL,
-		FOREIGN KEY (registrationId) REFERENCES RegistrationToWorkoutPlans(id)
+		FOREIGN KEY (registrationId) REFERENCES RegistrationToWorkoutPlans(id) ON DELETE CASCADE
 	);
 
 	GO

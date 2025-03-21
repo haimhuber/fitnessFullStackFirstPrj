@@ -1,4 +1,3 @@
-
 // Initials
 const express = require('express');
 const myRepository = require('./myRepository');
@@ -25,8 +24,9 @@ app.get('/link-to-middlware-test/:id?', (req, res) => {
 });
 
 //Home Page
-app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'about.html'));
+
 });
 // <--------------------------------------------------------------------------------------->//
 // Dispalys all plan names
@@ -75,14 +75,24 @@ app.post('/contact', async (req, res) => {
     }
 });
 
-app.post('/join-us', async (req, res) => {
-    const { fullName, email, phonenumber, dateOfBirth } = req.body; // Get data from request body
 
-    // Validate required fields
-    if (!fullName || !email || !phonenumber || !dateOfBirth) {
-        return res.status(400).json({ error: 'All fields are required' });
+app.get('/join-us', async (req, res) => {
+    try {
+        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
+        // Insert query using parameterized inputs (to prevent SQL Injection)
+        const result = await pool.request().query(`SELECT email from Members`)
+        res.json(result.recordset); // Send data as JSON response
+
+    } catch (error) {
+        console.error('User Email is already existing:', error);
+        res.status(500).json({ error: 'Database insert error! User Email is already in use!' });
     }
 
+});
+
+app.post('/join-us', async (req, res) => {
+    const { fullName, email, phonenumber, dateOfBirth } = req.body; // Get data from request body
+    // Check if mail is exiting! Email must be unique
     try {
         const pool = await myRepository.connectionToSqlDB(); // Connect to DB
 

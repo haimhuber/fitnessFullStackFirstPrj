@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <h1>CrossFit Powerhouse</h1>
+        <nav>
+            <ul>
+                <li><a class="navigator" href="http://localhost:5500">Home</a></li>
+                <li><a class="navigator highlight" href="http://localhost:5500/about">About</a></li>
+                <li><a onclick="showPlanDetalis()" class="navigator" href="#">Classes</a></li>
+                <li><a class="navigator" href="#">Testimonials</a></li>
+                <li><a class="navigator" href="http://localhost:5500/contact-page">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="classes">
+        <div id="class-from-db">
+            <section id="hero">
+                <h2>Unleash Your Potential</h2>
+                <p>Train hard. Get strong. Feel unstoppable.</p>
+                <a onclick="checkUnioueEmail()" href="#" class="btn">Join Now</a>
+                <div id="joinUs">
+                    <input class="joinUsClass" placeholder="Type your name" type="text" id="fullName">
+                    <input class="joinUsClass" placeholder="Type your email" type="text" id="email">
+                    <input class="joinUsClass" placeholder="Type your phone number" type="text" id="phonenumber">
+                    <input class="joinUsClass" type="date" id="birthOfDate">
+                </div>
+            </section>
+            <div id="image-container">
+                <img class="main-page-images"
+                    src="https://images.pexels.com/photos/1547248/pexels-photo-1547248.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="">
+            </div>
+        </div>
+    </section>
+
+    <footer>&copy; 2025 Fitness Club. All Rights Reserved.</footer>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

@@ -94,11 +94,32 @@ footer {
 }
 
 .flexDiv {
-    border: 2px blue solid;
+    border: 4px rgb(0, 0, 0) solid;
     border-radius: 5px;
     margin: 5px;
     padding: 10px;
     background-color: #a93d3d;
+    width: 220px;
+}
+
+.userActions {
+    width: 200px;
+}
+
+
+.userActionsButton {
+    width: 100px;
+}
+
+.userActionsButton:hover {
+    background-color: #de1212;
+    border: 3px black solid;
+}
+
+
+.flexDiv:hover {
+    background-color: #4239ea;
+    border: 4px #383535 solid;
 }
 
 .joinUsClass {

@@ -6,23 +6,11 @@ use master
 GO
 DROP DATABASE FitnessClubDB
 
--- OR:
--- 2) CLOSE ALL CONNECTIONS AND THEN DROP IT
-USE master;
-GO
-ALTER DATABASE FitnessClubDB 
-SET SINGLE_USER 
-WITH ROLLBACK IMMEDIATE;
-GO
-DROP DATABASE FitnessClubDB;
-------------------------------------------
-
 
 -- Create a new database called 'PizzaDB'
 -- Connect to the 'master' database to run this snippet
 USE master
 GO
-
 
 -- Create the new database if it does not exist already
 IF NOT EXISTS (

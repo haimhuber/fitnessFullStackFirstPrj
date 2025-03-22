@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <h1>CrossFit Powerhouse</h1>
+        <nav>
+            <ul>
+                <li><a class="navigator" href="http://localhost:5500">Home</a></li>
+                <li><a class="navigator " href="http://localhost:5500/about">About</a></li>
+                <li><a class="navigator " href="http://localhost:5500/class">Classes</a></li>
+                <li><a class="navigator" href="http://localhost:5500/contact-page">Contact</a></li>
+                <li><a class="navigator highlight" href="#">Users management</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="classes">
+        <div style="margin: 10px 10px ;">
+            <input class="radioButoons" style="width: 50px;" type="radio" name="actions" id="UpdateUser" value="1">
+            <label for="UpdateUser">Update user </label>
+        </div>
+        <div style="margin: 10px 10px ;">
+            <input class="radioButoons" style="width: 50px;" type="radio" name="actions" id="DeleteUser" value="2">
+            <label for="DeleteUser">Delete user </label>
+        </div>
+        <div style="margin: 20px 02px;"> <a onclick="showAllUsers()" href="#" class="btn">Show all users</a></div>
+        <div id="userActions">
+        </div>
+        <div id="class-from-db">
+        </div>
+    </section>
+
+    <footer>&copy; 2025 Fitness Club. All Rights Reserved.</footer>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

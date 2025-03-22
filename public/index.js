@@ -1,3 +1,6 @@
+// Radio button global variable
+let buttonUserAction = 0;
+
 function highlight() {
     let navItems = document.getElementsByClassName('navigator');
     Array.from(navItems).forEach(item => {
@@ -33,16 +36,13 @@ async function showPlanDetalis() {
                 // addedDiv.classList.add('addedDiv');
                 // Creating member deatilas as a 'p'
                 const planName = document.createElement('p');
-                const description = document.createElement('p');
                 const freqPerWeek = document.createElement('p');
                 const price = document.createElement('p');
                 planName.textContent = `Plan Name: ${item['planName']}`;
-                description.textContent = `Plan Description: ${item['description']}`;
                 freqPerWeek.textContent = `Per Week: ${item['freqPerWeek']}`;
                 price.textContent = `Price: ${(item['price'])}$`;
                 // Appending each member to the sub div
                 addedDiv.appendChild(planName);
-                addedDiv.appendChild(description);
                 addedDiv.appendChild(freqPerWeek);
                 addedDiv.appendChild(price);
                 // Appending to the main div
@@ -55,6 +55,103 @@ async function showPlanDetalis() {
 
     }
 }
+
+// Check which radio button client picked
+document.querySelectorAll('.radioButoons').forEach((radio) => {
+    radio.addEventListener('click', () => {
+        buttonUserAction = radio.value;
+        //console.log(buttonUserAction);
+
+
+    })
+})
+
+async function showAllUsers() {
+    try {
+        const response = await fetch(`http://localhost:5500/users`);
+        const data = await response.json();
+        console.log(data);
+        const myDiv = document.querySelector("#class-from-db");
+        const userActionDiv = document.querySelector("#userActions");
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(item => {
+                // Creating the sub div to each member
+                const addedDiv = document.createElement('div');
+                addedDiv.classList.add('flexDiv');
+                // addedDiv.classList.add('addedDiv');
+                // Creating member deatilas as a 'p'
+                const memberName = document.createElement('p');
+                const memberEmail = document.createElement('p');
+                const memberPhoneNunber = document.createElement('p');
+                const dateOfBirth = document.createElement('p');
+                const joinDate = document.createElement('p');
+                memberName.textContent = `Full Name: ${item['fullName']}`;
+                memberEmail.textContent = `Email: ${item['email']}`;
+                memberPhoneNunber.textContent = `PB: ${(item['phoneNumber'])}`;
+                dateOfBirth.textContent = `Bitrh Date: ${new Date((item['dateOfBirth'])).toISOString().split("T")[0]} `;
+                joinDate.textContent = `Join Date: ${new Date((item['joinDate'])).toISOString().split("T")[0]} `;
+                // Appending each member to the sub div
+                addedDiv.appendChild(memberName);
+                addedDiv.appendChild(memberEmail);
+                addedDiv.appendChild(memberPhoneNunber);
+                addedDiv.appendChild(dateOfBirth);
+                addedDiv.appendChild(joinDate);
+                // Appending to the main div
+                myDiv.appendChild(addedDiv);
+                addedDiv.addEventListener('click', () => {
+                    userActionDiv.textContent = "";
+                    // User name
+                    const actionName = document.createElement('input');
+                    actionName.classList.add('userActions');
+                    actionName.setAttribute('type', 'text');
+                    actionName.value = `${item['fullName']}`;
+                    // User Email
+                    const actionEmail = document.createElement('input');
+                    actionEmail.classList.add('userActions');
+                    actionEmail.setAttribute('type', 'text');
+                    actionEmail.value = `${item['email']}`;
+                    // User Phone Number
+                    const actionPhoneNumber = document.createElement('input');
+                    actionPhoneNumber.classList.add('userActions');
+                    actionPhoneNumber.setAttribute('type', 'text');
+                    actionPhoneNumber.value = `${item['phoneNumber']}`;
+                    // User Phone Number
+                    const actionBirthDate = document.createElement('input');
+                    actionBirthDate.classList.add('userActions');
+                    actionBirthDate.setAttribute('type', 'date');
+                    actionBirthDate.value = `${new Date((item['dateOfBirth'])).toISOString().split("T")[0]}`;
+                    // User Action -> Update / Delete
+                    const action = document.createElement('input');
+                    action.classList.add('userActionsButton');
+                    action.setAttribute('type', 'button');
+                    action.setAttribute('value', 'Send');
+                    action.setAttribute('onclick', 'userAction()');
+                    // Appendings
+                    userActionDiv.appendChild(actionName);
+                    userActionDiv.appendChild(actionEmail);
+                    userActionDiv.appendChild(actionPhoneNumber);
+                    userActionDiv.appendChild(actionBirthDate);
+                    userActionDiv.appendChild(action);
+
+                });
+            });
+        }
+
+    } catch (Error) {
+        console.log(Error);
+
+
+    }
+
+}
+
+
+function userAction() {
+    console.log('Clicked');
+    console.log(buttonUserAction);
+}
+
+
 
 async function sendForm(event) {
     event.preventDefault();

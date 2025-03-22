@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, 'public')));
 const cors = require("cors");
-const { log } = require('console');
+
 
 const port = process.env.PORT || 5500;
 app.use(cors());
@@ -23,15 +23,32 @@ app.get('/link-to-middlware-test/:id?', (req, res) => {
     throw Error(); // Sending error to the middleware
 });
 
-//Home Page
+//About Page
 app.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'about.html'));
 
 });
+app.get('/class', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'class.html'));
+
+});
+// <--------------------------------------------------------------------------------------->//
+// Dispalys all users names
+app.get('/users', async (req, res) => {
+    try {
+        const pool = await myRepository.connectionToSqlDB();
+        const result = await pool.request().query('SELECT * FROM Members');
+        res.json(result.recordset); // Send data as JSON response
+    } catch (err) {
+        console.error('Error fetching data:', err);
+        res.status(500).json({ error: 'Database query error' });
+    }
+});
+
+
 // <--------------------------------------------------------------------------------------->//
 // Dispalys all plan names
 app.get('/plan', async (req, res) => {
-    const methodPay = req.query.table; // Get method from query parameter
     try {
         const pool = await myRepository.connectionToSqlDB(); // Ensure connection is established
         const result = await pool.request().query('SELECT * FROM WorkoutPlans'); // Fetch all records

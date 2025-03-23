@@ -1,5 +1,19 @@
 // Radio button global variable
+// User Action -> Update / Delete
 let buttonUserAction = 0;
+
+// Check which radio button client picked
+document.querySelectorAll('.radioButoons').forEach((radio) => {
+    radio.addEventListener('click', () => {
+        buttonUserAction = radio.value;
+    })
+})
+// <------------------------------------------------>
+const action = document.createElement('input');
+action.classList.add('userActionsButton');
+action.setAttribute('type', 'button');
+action.setAttribute('value', 'Send');
+// <----------------------------------------------------------------->
 
 function highlight() {
     let navItems = document.getElementsByClassName('navigator');
@@ -56,15 +70,6 @@ async function showPlanDetalis() {
     }
 }
 
-// Check which radio button client picked
-document.querySelectorAll('.radioButoons').forEach((radio) => {
-    radio.addEventListener('click', () => {
-        buttonUserAction = radio.value;
-        //console.log(buttonUserAction);
-
-
-    })
-})
 
 async function showAllUsers() {
     try {
@@ -99,6 +104,15 @@ async function showAllUsers() {
                 // Appending to the main div
                 myDiv.appendChild(addedDiv);
                 addedDiv.addEventListener('click', () => {
+                    // Creation of the body req - PUT Method
+                    const updateMemeberTable = {
+                        fullName: item['fullName'],
+                        email: item['email'],
+                        phonenumber: item['phoneNumber'],
+                        dateOfBirth: `${new Date((item['dateOfBirth'])).toISOString().split("T")[0]}`,
+                        table: 'Members'
+                    }
+
                     userActionDiv.textContent = "";
                     // User name
                     const actionName = document.createElement('input');
@@ -120,12 +134,13 @@ async function showAllUsers() {
                     actionBirthDate.classList.add('userActions');
                     actionBirthDate.setAttribute('type', 'date');
                     actionBirthDate.value = `${new Date((item['dateOfBirth'])).toISOString().split("T")[0]}`;
-                    // User Action -> Update / Delete
-                    const action = document.createElement('input');
-                    action.classList.add('userActionsButton');
-                    action.setAttribute('type', 'button');
-                    action.setAttribute('value', 'Send');
-                    action.setAttribute('onclick', 'userAction()');
+                    //Radio button from line 4
+                    action.setAttribute(
+                        'onclick',
+                        `userAction(${item['id']}, '${JSON.stringify(updateMemeberTable).replace(/'/g, "\\'")}')`
+                    );
+
+
                     // Appendings
                     userActionDiv.appendChild(actionName);
                     userActionDiv.appendChild(actionEmail);
@@ -145,10 +160,30 @@ async function showAllUsers() {
 
 }
 
+async function userAction(userId, dataToUpdate) {
+    const dataFromUser = JSON.parse(dataToUpdate);
+    console.log(typeof (buttonUserAction));
+    if (buttonUserAction === '0') {
+        alert('Please pick an user action!');
+    } else if (buttonUserAction === '1') { //Update User
+        console.log('YES');
 
-function userAction() {
-    console.log('Clicked');
-    console.log(buttonUserAction);
+        try {
+            const response = await fetch(`http://localhost:5500/update-user/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataFromUser),
+            });
+
+            const data = await response.json(); // Get response as text
+            console.log('Server Response:', data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+    }
 }
 
 
@@ -272,55 +307,4 @@ async function showJoinUs(email) {
     }
 }
 
-
-
-
-// async function getData() {
-//     const paymentMethod = document.querySelector("#paymentText").value;
-//     if (!paymentMethod) {
-//         alert("Method payment must be typed!");
-//         return;
-//     }
-//     try {
-//         document.querySelector("#createdData").textContent = "";
-//         const response = await fetch(`http://localhost:5500/payments?methodPay=${paymentMethod}`);
-//         const data = await response.json();
-//         console.log(data);
-//         const myDiv = document.querySelector("#createdData");
-//         myDiv.textContent = "";
-//         if (Array.isArray(data) && data.length > 0) {
-//             let index = 0;
-//             document.querySelector("#dataFromSQL").textContent = "";
-//             data.forEach(item => {
-//                 // Creating the DOM
-//                 const date = new Date(item['joinDate']);
-//                 const addedDiv = document.createElement('div');
-//                 addedDiv.classList.add('addedDiv');
-//                 const memberFirstName = document.createElement('p');
-//                 const memberEmail = document.createElement('p');
-//                 const memberJoinDate = document.createElement('p');
-//                 const memberPaymentMethod = document.createElement('p');
-//                 memberPaymentMethod.textContent = `Member Payment Method: ${item['paymentMethods']}`;
-//                 memberFirstName.textContent = `Member Name: ${item['fullName']}`;
-//                 memberEmail.textContent = `Member Email: ${item['email']}`;
-//                 memberJoinDate.textContent = `Join Date: ${date.toLocaleString()}`;
-//                 // Appending the DOM
-//                 addedDiv.appendChild(memberFirstName);
-//                 addedDiv.appendChild(memberEmail);
-//                 addedDiv.appendChild(memberJoinDate);
-//                 addedDiv.appendChild(memberJoinDate);
-//                 addedDiv.appendChild(memberPaymentMethod);
-//                 // Appending to the main div
-//                 myDiv.appendChild(addedDiv);
-//             })
-//         } else {
-//             document.querySelector("#dataFromSQL").textContent = "There's no data from SQL server";
-//         }
-
-//     } catch (error) {
-//         console.error('Error:', error);
-//         document.querySelector("#dataFromSQL").textContent = 'Error fetching data from SQL server';
-
-//     }
-// }
 

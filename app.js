@@ -4,6 +4,7 @@ const myRepository = require('./myRepository');
 const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+app.use(express.json()); // Enable JSON parsing
 app.use(express.urlencoded({ extended: true }));
 const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, 'public')));
@@ -27,10 +28,21 @@ app.get('/link-to-middlware-test/:id?', (req, res) => {
 app.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'about.html'));
 
+    // Class Page
 });
 app.get('/class', async (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'class.html'));
 
+});
+
+// Go to contact - page
+app.get('/contact-page', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'contactUs.html'));
+});
+
+// Go to User managment - page
+app.get('/user-managment', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'userManagment.html'));
 });
 // <--------------------------------------------------------------------------------------->//
 // Dispalys all users names
@@ -45,7 +57,6 @@ app.get('/users', async (req, res) => {
     }
 });
 
-
 // <--------------------------------------------------------------------------------------->//
 // Dispalys all plan names
 app.get('/plan', async (req, res) => {
@@ -58,12 +69,6 @@ app.get('/plan', async (req, res) => {
         res.status(500).json({ error: 'Database query error' });
     }
 });
-
-// Go to contact - page
-app.get('/contact-page', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'contactUs.html'));
-});
-
 
 // POST API to Insert Contact Form Data
 app.post('/contact', async (req, res) => {
@@ -93,6 +98,8 @@ app.post('/contact', async (req, res) => {
 });
 
 
+// <--------------------------------------------------------------------------------------->//
+// Join get request to check the email
 app.get('/join-us', async (req, res) => {
     try {
         const pool = await myRepository.connectionToSqlDB(); // Connect to DB
@@ -107,6 +114,8 @@ app.get('/join-us', async (req, res) => {
 
 });
 
+// <--------------------------------------------------------------------------------------->//
+// Join post to add new join request
 app.post('/join-us', async (req, res) => {
     const { fullName, email, phonenumber, dateOfBirth } = req.body; // Get data from request body
     // Check if mail is exiting! Email must be unique
@@ -127,6 +136,31 @@ app.post('/join-us', async (req, res) => {
         res.status(500).json({ error: 'Database insert error' });
     }
 });
+
+
+// <--------------------------------------------------------------------------------------->//
+// PUT Method
+app.put('/update-user/:userId', async (req, res) => {
+    try {
+        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
+        res.send(req.body.fullName);
+        // Insert query using parameterized inputs (to prevent SQL Injection)
+        await pool.request()
+            .input('fullName', req.body.fullName)
+            // .input('email', req.body.email)
+            // .input('phonenumber', req.body.phonenumber)
+            // .input('dateOfBirth', req.body.dateOfBirth)
+            .query(`UPDATE ${req.body.table} SET fullName = ${req.body.fullName} WHERE id = ${req.params.userId} `);
+
+        res.status(201).json({ message: 'Member Update successfully!' });
+    } catch (err) {
+        console.error('Error inserting data:', err);
+        res.status(500).json({ error: 'Database insert error' });
+    }
+
+
+})
+
 
 // Middleware handler
 app.use(function (err, req, res, next) {

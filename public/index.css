@@ -49,13 +49,13 @@ nav ul li {
 
 #hero {
     background: url('crossfit-bg.jpg') no-repeat center center/cover;
-    color: rgb(217, 50, 50);
+    color: rgb(99, 3, 3);
     padding: 1px 50px;
 }
 
 .btn {
     display: inline-block;
-    background: #ff4500;
+    background: rgb(217, 50, 50);
     color: white;
     padding: 10px 20px;
     text-decoration: none;
@@ -63,7 +63,7 @@ nav ul li {
 }
 
 .btn:hover {
-    background: #4239ea;
+    background: #ff4500;
 }
 
 section {
@@ -118,7 +118,7 @@ footer {
 
 
 .flexDiv:hover {
-    background-color: #4239ea;
+    background-color: #ff4500;
     border: 4px #383535 solid;
 }
 
@@ -131,6 +131,11 @@ footer {
     display: inline-block;
 }
 
+.joinUsClass:hover {
+    background-color: #ff4500;
+    font-weight: 900;
+}
+
 
 /* Contact us CSS */
 body {
@@ -141,12 +146,20 @@ body {
 }
 
 .container {
-    width: 50%;
+    width: 460px;
     margin: 50px auto;
-    padding: 20px;
+    padding: 30px 50px 30px 30px;
     background: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    background-color:antiquewhite
+    
+}
+
+.container:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
+    border: 5px black solid;
 }
 
 h2 {
@@ -181,5 +194,6 @@ button {
 }
 
 button:hover {
-    background: #218838;
+    background: #ff4500;
 }
+

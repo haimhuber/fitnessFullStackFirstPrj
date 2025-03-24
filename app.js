@@ -15,7 +15,7 @@ const port = process.env.PORT || 5500;
 app.use(cors());
 
 // Middleware Test
-app.get('/link-to-middlware-test/:id?', (req, res) => {
+app.put('/update-user/:userId?', (req, res) => {
     if (!req.params.id) {
         req.myError = { reason: 'Please add id to the request', isServer: false };
     } else {
@@ -140,34 +140,55 @@ app.post('/join-us', async (req, res) => {
 
 // <--------------------------------------------------------------------------------------->//
 // PUT Method
-app.put('/update-user/:userId', async (req, res) => {
+app.put('/update-user', async (req, res, next) => {
     try {
         const pool = await myRepository.connectionToSqlDB(); // Connect to DB
-        res.send(req.body.fullName);
-        // Insert query using parameterized inputs (to prevent SQL Injection)
-        await pool.request()
+
+        // Execute update query for user ID 1
+        const result = await pool.request()
             .input('fullName', req.body.fullName)
-            // .input('email', req.body.email)
-            // .input('phonenumber', req.body.phonenumber)
-            // .input('dateOfBirth', req.body.dateOfBirth)
-            .query(`UPDATE ${req.body.table} SET fullName = ${req.body.fullName} WHERE id = ${req.params.userId} `);
+            .input('email', req.body.email)
+            .input('phoneNumber', req.body.phoneNumber)
+            .input('dateOfBirth', req.body.dateOfBirth)
+            .query(`UPDATE Members 
+                    SET fullName = @fullName, 
+                        email = @email, 
+                        phoneNumber = @phoneNumber, 
+                        dateOfBirth = @dateOfBirth
+                    WHERE id = 1`);
 
-        res.status(201).json({ message: 'Member Update successfully!' });
+        // Check if the row was updated
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ message: 'User ID 1 not found' });
+        }
+
+        res.status(200).json({ message: 'User ID 1 updated successfully!' });
     } catch (err) {
-        console.error('Error inserting data:', err);
-        res.status(500).json({ error: 'Database insert error' });
+        err.isServer = true;
+        next(err);
+        console.error('Error updating user:', err);
     }
+});
+app.put('/example-of-put-method/:paramId', async (req, res) => {
+    res.send({ 'Body Params': req.body, 'Param id': req.params.paramId });
 
+});
 
-})
-
+app.delete('/example-of-delete-method/:paramId', async (req, res) => {
+    if (req.body != undefined) {
+        res.send({ 'User sent empty body': req.body })
+    }
+    else {
+        res.send({ 'User send the body': req.body });
+    }
+});
 
 // Middleware handler
 app.use(function (err, req, res, next) {
-    if (req.myError.isServer) {
-        res.status(500).send('Something went wrong!');
+    if (err.isServer) {
+        res.status(500).send('Something went wrong! Data cannot updated');
     } else {
-        res.status(400).send(`${req.myError.reason}`);
+        res.status(400).send(`HI${err.isServer}`);
     }
 })
 

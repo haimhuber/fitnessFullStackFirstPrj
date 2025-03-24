@@ -4,7 +4,7 @@ const sql = require('mssql');
 const config = {
     user: 'sa10',
     password: '1234',
-    server: 'localhost',
+    server: 'localhost/ABB_2019',
     database: 'FitnessClubDB',
     options: {
         encrypt: false, // for azure change to true

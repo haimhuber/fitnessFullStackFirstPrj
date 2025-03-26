@@ -58,7 +58,7 @@ async function updateUser(userData) {
 module.exports.updateUser = updateUser;
 
 
-// Getting users Data
+// Inserting users Data
 async function insertingNewUser(userData) {
 
     try {
@@ -86,6 +86,36 @@ async function insertingNewUser(userData) {
 module.exports.insertingNewUser = insertingNewUser;
 
 
+
+// Contact from form
+async function formContact(userData) {
+
+    try {
+        const pool = await connectionToSqlDB(); // Connect to DB
+
+        // Execute update query for user ID 1
+        const result = await pool.request()
+        await pool.request()
+            .input('name', userData.name)
+            .input('email', userData.email)
+            .input('subject', userData.subject)
+            .input('message', userData.message)
+            .query(`INSERT INTO ContactForm (name, email, subject, message) VALUES (@name, @email, @subject, @message)`);
+
+        // Check if the row was updated
+        if (result.rowsAffected[0] === 0) {
+            return { message: 'Contact canoot be sent ', status: 404 };
+        }
+        return { message: 'Contact sent successfully!', status: 200 };
+    } catch (err) {
+        //console.error('Error updating user:', err);
+        return { message: err.message, status: 500 };
+    }
+};
+
+module.exports.formContact = formContact;
+
+
 // Getting users Data
 async function getAllPlansData() {
 
@@ -102,21 +132,3 @@ async function getAllPlansData() {
 };
 
 module.exports.getAllPlansData = getAllPlansData;
-
-
-// // Inserting users Data
-// async function insertingNewUser() {
-
-//     try {
-//         const pool = await connectionToSqlDB(); // Connect to DB
-//         const result = await pool.request().query(`SELECT email from Members`);
-//         return { data: result.recordsets[0], status: 200 };
-//     } catch (err) {
-//         //next(err);
-//         console.error('Error imported successfully!:', err);
-//         return { message: err, status: 400 };
-
-//     }
-// };
-
-// module.exports.insertingNewUser = insertingNewUser;

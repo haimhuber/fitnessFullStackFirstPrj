@@ -159,10 +159,6 @@ async function showAllUsers() {
 
 }
 
-async function updateUser() {
-
-}
-
 async function deleteUser() {
     const dataFromUser = JSON.parse(dataToUpdate);
 }
@@ -220,14 +216,17 @@ async function sendForm(event) {
 
         const data = await response.text(); // Get response as text
         console.log(data);
+        window.location.href = 'http://127.0.0.1:5500/public/thankYou.html';  // Replace with your main page URL 
 
         // document.getElementById('responseMessage').innerText = data; // Show response
     } catch (error) {
         console.error('Error:', error);
         // document.getElementById('responseMessage').innerText = 'Error sending message!';
+        console.log("Form cannot be sended");
+
     }
 
-    window.location.href = 'http://127.0.0.1:5500/public/thankYou.html';  // Replace with your main page URL  
+
 }
 
 // Join - Us button

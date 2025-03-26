@@ -51,7 +51,6 @@ app.get('/users', async (req, res) => {
 app.get('/plan', async (req, res) => {
     const result = await myRepository.getAllPlansData();
     console.log(result.data);
-
     res.send(result.data);
 
 });
@@ -60,28 +59,30 @@ app.get('/plan', async (req, res) => {
 // POST API to Insert Contact Form Data
 app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body; // Get data from request body
+    const userData = { name, email, subject, message };
 
     // Validate required fields
     if (!name || !email || !subject || !message) {
         return res.status(400).json({ error: 'All fields are required' });
+    } else {
+        try {
+            const result = await myRepository.formContact(userData); // Connect to DB
+            switch (result.status) {
+                case 200:
+                    res.send(result.status);
+                    break;
+                case 404:
+                    res.send(result.status);
+                    break;
+                case 500:
+                    res.send(result.status);
+                    break;
+            }
+        } catch (err) {
+            res.status(500).send(`Something went wrong - ${err}`);
+        }
     }
 
-    try {
-        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
-
-        // Insert query using parameterized inputs (to prevent SQL Injection)
-        await pool.request()
-            .input('name', name)
-            .input('email', email)
-            .input('subject', subject)
-            .input('message', message)
-            .query(`INSERT INTO ${req.body.table} (name, email, subject, message) VALUES (@name, @email, @subject, @message)`);
-
-        res.status(201).json({ message: 'Contact form submitted successfully!' });
-    } catch (err) {
-        console.error('Error inserting data:', err);
-        res.status(500).json({ error: 'Database insert error' });
-    }
 });
 
 

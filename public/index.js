@@ -112,7 +112,6 @@ async function showAllUsers() {
                         dateOfBirth: `${new Date((item['dateOfBirth'])).toISOString().split("T")[0]}`,
                         table: 'Members'
                     }
-
                     userActionDiv.textContent = "";
                     // User name
                     const actionName = document.createElement('input');
@@ -232,85 +231,57 @@ async function sendForm(event) {
 }
 
 // Join - Us button
+async function joinUs() {
+    let dateOfBirth = new Date();
+    const dateInput = document.querySelector("#birthOfDate").value;
 
-async function checkUnioueEmail() {
-    let emailIsUnique = false;
-    const userInputEmail = document.querySelector("#email").value;
-    try {
-        const response = await fetch('http://localhost:5500/join-us')
-        const data = await response.json();
-        console.log(data);
-        data.forEach(element => {
-            if (userInputEmail === element['email']) {
-                emailIsUnique = false;
-                showJoinUs(emailIsUnique);
-                return;
-            }
-        });
-        emailIsUnique = true;
-        showJoinUs(emailIsUnique);
-
-
-
-    } catch (error) {
-        console.error('Error:', error);
-        return;
-
+    if (!dateInput) {
+        dateOfBirth = new Date();
+    } else {
+        dateOfBirth = new Date(dateInput).toISOString().split("T")[0]; // Get 'YYYY-MM-DD' only
     }
-}
-
-async function showJoinUs(email) {
-    if (email) {
-
-        let dateOfBirth = new Date();
-        const dateInput = document.querySelector("#birthOfDate").value;
-        console.log(dateInput);
-
-        if (!dateInput) {
-            dateOfBirth = new Date();
-        } else {
-            dateOfBirth = new Date(dateInput).toISOString().split("T")[0]; // Get 'YYYY-MM-DD' only
-        }
-
-
-        const queryToMemeberTable = {
-            fullName: document.querySelector("#fullName").value,
-            email: document.querySelector("#email").value,
-            phonenumber: document.querySelector("#phonenumber").value,
-            dateOfBirth: dateOfBirth
-        }
-        for (let key in queryToMemeberTable) {
-            if (queryToMemeberTable.hasOwnProperty(key)) {  // Ensure the key is part of the object
-                const value = queryToMemeberTable[key];
-                if (!value) {  // Check if the value is falsy (e.g., empty string, null, undefined)
-                    alert("Fill all fields!");
-                    return; // return
-                }
+    const queryToMemeberTable = {
+        fullName: document.querySelector("#fullName").value,
+        email: document.querySelector("#email").value,
+        phoneNumber: document.querySelector("#phonenumber").value,
+        dateOfBirth: dateOfBirth
+    }
+    for (let key in queryToMemeberTable) {
+        if (queryToMemeberTable.hasOwnProperty(key)) {  // Ensure the key is part of the object
+            const value = queryToMemeberTable[key];
+            if (!value) {  // Check if the value is falsy (e.g., empty string, null, undefined)
+                alert("Fill all fields!");
+                return; // return
             }
         }
-        console.log(queryToMemeberTable);
-        try {
-            const response = await fetch('http://localhost:5500/join-us', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', // Sending as x-www-form-urlencoded
-                },
-                body: JSON.stringify(queryToMemeberTable) //  Convert object to JSON string
-            });
+    }
+    // console.log(queryToMemeberTable);
+    try {
+        const response = await fetch('http://localhost:5500/join-us', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Sending as x-www-form-urlencoded
+            },
+            body: JSON.stringify(queryToMemeberTable) //  Convert object to JSON string
+        });
 
-            const data = await response.text(); // Get response as text
-            console.log(data);
+        const data = await response.text(); // Get response as text
+        console.log(data);
+
+        if (data === "Not Found") {
+            console.log("User cannot be insreted");
+            return;
+        } else if (data === "OK") {
             alert("Thank you! Our staff will reach out shortly");
             window.location.href = 'http://127.0.0.1:5500/public/about.html'; // Page refresh
-
-            // document.getElementById('responseMessage').innerText = data; // Show response
-        } catch (error) {
-            console.error('Error:', error);
-            // document.getElementById('responseMessage').innerText = 'Error sending message!';
+        } else if (data === "Internal Server Error") {
+            alert("Email must be unique!");
         }
 
-    } else {
-        alert('Email is already in use');
+        // document.getElementById('responseMessage').innerText = data; // Show response
+    } catch (error) {
+        console.error('Error:', error);
+        // document.getElementById('responseMessage').innerText = 'Error sending message!';
     }
 }
 

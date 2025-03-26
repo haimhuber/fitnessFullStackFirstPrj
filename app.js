@@ -9,26 +9,11 @@ app.use(express.urlencoded({ extended: true }));
 const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, 'public')));
 const cors = require("cors");
-
+const { log } = require('console');
 
 const port = process.env.PORT || 5500;
 app.use(cors());
-
-// Middleware Test
-
-app.get('/hello-world', (req, res) => {
-    res.send('Helo');
-})
-
-// app.put('/update-user/:userId', (req, res) => {
-//     if (!req.params.id) {
-//         req.myError = { reason: 'Please add id to the request', isServer: false };
-//     } else {
-//         req.myError = { reason: 'Server down', isServer: true };
-//     }
-//     throw Error(); // Sending error to the middleware
-// });
-
+// <-------------------------Pages-------------------------------------------->
 //About Page
 app.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'about.html'));
@@ -49,7 +34,7 @@ app.get('/contact-page', (req, res) => {
 app.get('/user-managment', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'userManagment.html'));
 });
-// <--------------------------------------------------------------------------------------->//
+// <---------------------------------Get Mtehod------------------------------------------------------>//
 // Dispalys all users names
 app.get('/users', async (req, res) => {
     try {
@@ -62,19 +47,16 @@ app.get('/users', async (req, res) => {
     }
 });
 
-// <--------------------------------------------------------------------------------------->//
 // Dispalys all plan names
 app.get('/plan', async (req, res) => {
-    try {
-        const pool = await myRepository.connectionToSqlDB(); // Ensure connection is established
-        const result = await pool.request().query('SELECT * FROM WorkoutPlans'); // Fetch all records
-        res.json(result.recordset); // Send data as JSON response
-    } catch (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).json({ error: 'Database query error' });
-    }
+    const result = await myRepository.getAllPlansData();
+    console.log(result.data);
+
+    res.send(result.data);
+
 });
 
+// <---------------------------------Post Mtehod------------------------------------------------------>//
 // POST API to Insert Contact Form Data
 app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body; // Get data from request body
@@ -104,38 +86,22 @@ app.post('/contact', async (req, res) => {
 
 
 // <--------------------------------------------------------------------------------------->//
-// Join get request to check the email
-app.get('/join-us', async (req, res) => {
-    try {
-        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
-        // Insert query using parameterized inputs (to prevent SQL Injection)
-        const result = await pool.request().query(`SELECT email from Members`)
-        res.json(result.recordset); // Send data as JSON response
-
-    } catch (error) {
-        console.error('User Email is already existing:', error);
-        res.status(500).json({ error: 'Database insert error! User Email is already in use!' });
-    }
-
-});
-
-// <--------------------------------------------------------------------------------------->//
 // Join post to add new join request
 app.post('/join-us', async (req, res) => {
-    const userData = { fullName, email, phonenumber, dateOfBirth } = req.body;
+
+    const { fullName, email, phoneNumber, dateOfBirth } = req.body;
+    const userData = { fullName, email, phoneNumber, dateOfBirth };
     try {
-        const result = await myRepository.getUsersData(userData); // Connect to DB
+        const result = await myRepository.insertingNewUser(userData); // Connect to DB
         switch (result.status) {
             case 200:
-                res.json(result);
+                res.send(result.status);
                 break;
             case 404:
-                res.json(result);
+                res.send(result.status);
                 break;
             case 500:
-                res.json(result);
-                break;
-            default:
+                res.send(result.status);
                 break;
         }
     } catch (err) {
@@ -144,8 +110,7 @@ app.post('/join-us', async (req, res) => {
 });
 
 
-// <--------------------------------------------------------------------------------------->//
-// PUT Method
+// <---------------------------------Put Mtehod------------------------------------------------------>//
 app.put('/update-user/:userId', async (req, res) => {
     const userData = { fullName, email, phonenumber, dateOfBirth } = req.body;
     userData['userId'] = req.params.userId;
@@ -176,7 +141,7 @@ app.put('/example-of-put-method/:paramId', async (req, res) => {
 
 });
 
-// <--------------------------------------------------------------------------------------->//
+// <---------------------------------Delete Mtehod------------------------------------------------------>//
 // Delete Method
 app.delete('/example-of-delete-method/:paramId', async (req, res) => {
     if (req.body != undefined) {
@@ -187,19 +152,7 @@ app.delete('/example-of-delete-method/:paramId', async (req, res) => {
     }
 });
 
-// Middleware handler
-app.use(function (err, req, res, next) {
-    if (err.isServer) {
-        res.status(500).send('Something went wrong! Data cannot updated');
-        if (err.isServer) {
-            res.status(500).send('Something went wrong! Data cannot updated');
-        } else {
-            res.status(400).send(`HI${err.isServer}`);
-        }
-    }
-});
-
-
+// <---------------------------------Listner------------------------------------------------------>//
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });

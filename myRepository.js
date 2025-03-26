@@ -59,32 +59,64 @@ module.exports.updateUser = updateUser;
 
 
 // Getting users Data
-async function getUsersData(userData) {
+async function insertingNewUser(userData) {
+
     try {
         const pool = await connectionToSqlDB(); // Connect to DB
 
         // Execute update query for user ID 1
         const result = await pool.request()
-        await pool.request()
             .input('fullName', userData.fullName)
             .input('email', userData.email)
-            .input('phonenumber', userData.phonenumber)
+            .input('phoneNumber', userData.phoneNumber)
             .input('dateOfBirth', userData.dateOfBirth)
             .query(`INSERT INTO Members (fullName, email, phonenumber, dateOfBirth) VALUES (@fullName, @email, @phonenumber, @dateOfBirth)`);
 
-
         // Check if the row was updated
         if (result.rowsAffected[0] === 0) {
-            return { message: 'User cannot be updated! please check all necceries fields', status: 404 };
+            return { message: 'User ID 1 not found', status: 404 };
         }
+        return { message: 'User inserted successfully!', status: 200 };
+    } catch (err) {
+        //console.error('Error updating user:', err);
+        return { message: err.message, status: 500 };
+    }
+};
 
-        return { message: 'User inserted!', status: 200 };
+module.exports.insertingNewUser = insertingNewUser;
+
+
+// Getting users Data
+async function getAllPlansData() {
+
+    try {
+        const pool = await connectionToSqlDB(); // Connect to DB
+        const result = await pool.request().query('SELECT * FROM WorkoutPlans'); // Fetch all records
+        return { data: result.recordsets[0] };
     } catch (err) {
         //next(err);
-        console.error('Error updating user:', err);
+        console.error('Error imported successfully!:', err);
         return { message: err, status: 500 };
 
     }
 };
 
-module.exports.getUsersData = getUsersData;
+module.exports.getAllPlansData = getAllPlansData;
+
+
+// // Inserting users Data
+// async function insertingNewUser() {
+
+//     try {
+//         const pool = await connectionToSqlDB(); // Connect to DB
+//         const result = await pool.request().query(`SELECT email from Members`);
+//         return { data: result.recordsets[0], status: 200 };
+//     } catch (err) {
+//         //next(err);
+//         console.error('Error imported successfully!:', err);
+//         return { message: err, status: 400 };
+
+//     }
+// };
+
+// module.exports.insertingNewUser = insertingNewUser;

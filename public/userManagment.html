@@ -22,15 +22,11 @@
         </nav>
     </header>
     <section id="classes">
-        <div style="margin: 10px 10px ;">
-            <input class="radioButoons" style="width: 50px;" type="radio" name="actions" id="UpdateUser" value="1">
-            <label for="UpdateUser">Update user </label>
+
+        <div style="margin: 20px 02px;"> <a onclick="showAllUsers()" href="#" class="btn">Show all users</a>
+            <input type="button" value="update" onclick="updateUser()">
+            <input type="button" value="delete" onclick="deleteUser()">
         </div>
-        <div style="margin: 10px 10px ;">
-            <input class="radioButoons" style="width: 50px;" type="radio" name="actions" id="DeleteUser" value="2">
-            <label for="DeleteUser">Delete user </label>
-        </div>
-        <div style="margin: 20px 02px;"> <a onclick="showAllUsers()" href="#" class="btn">Show all users</a></div>
         <div id="userActions">
         </div>
         <div id="class-from-db">

@@ -160,6 +160,14 @@ async function showAllUsers() {
 
 }
 
+async function updateUser() {
+
+}
+
+async function deleteUser() {
+    const dataFromUser = JSON.parse(dataToUpdate);
+}
+
 async function userAction(userId, dataToUpdate) {
     const dataFromUser = JSON.parse(dataToUpdate);
     console.log(typeof (buttonUserAction));
@@ -269,8 +277,7 @@ async function showJoinUs(email) {
             fullName: document.querySelector("#fullName").value,
             email: document.querySelector("#email").value,
             phonenumber: document.querySelector("#phonenumber").value,
-            dateOfBirth: dateOfBirth,
-            table: 'Members'
+            dateOfBirth: dateOfBirth
         }
         for (let key in queryToMemeberTable) {
             if (queryToMemeberTable.hasOwnProperty(key)) {  // Ensure the key is part of the object

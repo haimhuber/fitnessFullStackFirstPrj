@@ -16,14 +16,18 @@ app.use(cors());
 
 // Middleware Test
 
-app.put('/update-user/:userId?', (req, res) => {
-    if (!req.params.id) {
-        req.myError = { reason: 'Please add id to the request', isServer: false };
-    } else {
-        req.myError = { reason: 'Server down', isServer: true };
-    }
-    throw Error(); // Sending error to the middleware
-});
+app.get('/hello-world', (req, res) => {
+    res.send('Helo');
+})
+
+// app.put('/update-user/:userId', (req, res) => {
+//     if (!req.params.id) {
+//         req.myError = { reason: 'Please add id to the request', isServer: false };
+//     } else {
+//         req.myError = { reason: 'Server down', isServer: true };
+//     }
+//     throw Error(); // Sending error to the middleware
+// });
 
 //About Page
 app.get('/about', (req, res) => {
@@ -118,63 +122,62 @@ app.get('/join-us', async (req, res) => {
 // <--------------------------------------------------------------------------------------->//
 // Join post to add new join request
 app.post('/join-us', async (req, res) => {
-    const { fullName, email, phonenumber, dateOfBirth } = req.body; // Get data from request body
-    // Check if mail is exiting! Email must be unique
+    const userData = { fullName, email, phonenumber, dateOfBirth } = req.body;
     try {
-        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
-
-        // Insert query using parameterized inputs (to prevent SQL Injection)
-        await pool.request()
-            .input('fullName', fullName)
-            .input('email', email)
-            .input('phonenumber', phonenumber)
-            .input('dateOfBirth', dateOfBirth)
-            .query(`INSERT INTO ${req.body.table} (fullName, email, phonenumber, dateOfBirth) VALUES (@fullName, @email, @phonenumber, @dateOfBirth)`);
-
-        res.status(201).json({ message: 'Member join successfully!' });
+        const result = await myRepository.getUsersData(userData); // Connect to DB
+        switch (result.status) {
+            case 200:
+                res.json(result);
+                break;
+            case 404:
+                res.json(result);
+                break;
+            case 500:
+                res.json(result);
+                break;
+            default:
+                break;
+        }
     } catch (err) {
-        console.error('Error inserting data:', err);
-        res.status(500).json({ error: 'Database insert error' });
+        res.status(500).send(`Something went wrong - ${err}`);
     }
 });
 
 
 // <--------------------------------------------------------------------------------------->//
 // PUT Method
-app.put('/update-user', async (req, res, next) => {
+app.put('/update-user/:userId', async (req, res) => {
+    const userData = { fullName, email, phonenumber, dateOfBirth } = req.body;
+    userData['userId'] = req.params.userId;
     try {
-        const pool = await myRepository.connectionToSqlDB(); // Connect to DB
-
-        // Execute update query for user ID 1
-        const result = await pool.request()
-            .input('fullName', req.body.fullName)
-            .input('email', req.body.email)
-            .input('phoneNumber', req.body.phoneNumber)
-            .input('dateOfBirth', req.body.dateOfBirth)
-            .query(`UPDATE Members 
-                    SET fullName = @fullName, 
-                        email = @email, 
-                        phoneNumber = @phoneNumber, 
-                        dateOfBirth = @dateOfBirth
-                    WHERE id = 1`);
-
-        // Check if the row was updated
-        if (result.rowsAffected[0] === 0) {
-            return res.status(404).json({ message: 'User ID 1 not found' });
+        const result = await myRepository.updateUser(userData); // Connect to DB
+        switch (result.status) {
+            case 200:
+                res.json(result);
+                break;
+            case 404:
+                res.json(result);
+                break;
+            case 500:
+                res.json(result);
+                break;
+            default:
+                break;
         }
-
-        res.status(200).json({ message: 'User ID 1 updated successfully!' });
     } catch (err) {
-        err.isServer = true;
-        next(err);
-        console.error('Error updating user:', err);
+        res.status(500).send(`Something went wrong - ${err}`);
     }
 });
+
+
+// <--------------------------------------------------------------------------------------->//
 app.put('/example-of-put-method/:paramId', async (req, res) => {
     res.send({ 'Body Params': req.body, 'Param id': req.params.paramId });
 
 });
 
+// <--------------------------------------------------------------------------------------->//
+// Delete Method
 app.delete('/example-of-delete-method/:paramId', async (req, res) => {
     if (req.body != undefined) {
         res.send({ 'User sent empty body': req.body })

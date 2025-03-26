@@ -1,0 +1,28 @@
+{
+    "message": {
+        "code": "EREQUEST",
+        "originalError": {
+            "info": {
+                "name": "ERROR",
+                "handlerName": "onErrorMessage",
+                "number": 2627,
+                "state": 1,
+                "class": 14,
+                "message": "Violation of UNIQUE KEY constraint 'UQ__Members__AB6E6164129A5669'. Cannot insert duplicate key in object 'dbo.Members'. The duplicate key value is (john.doe@example.com).",
+                "serverName": "A11-241",
+                "procName": "",
+                "lineNumber": 1
+            }
+        },
+        "name": "RequestError",
+        "number": 2627,
+        "lineNumber": 1,
+        "state": 1,
+        "class": 14,
+        "serverName": "A11-241",
+        "procName": "",
+        "precedingErrors": [],
+        "isServer": true
+    },
+    "status": 500
+}

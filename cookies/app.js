@@ -72,21 +72,43 @@ const port = process.env.PORT || 5500;
 
 // <----------------------------------------------------->
 
-app.use('/special', (req, res, next) => {
+// app.use('/special', (req, res, next) => {
+//     const cookieConfig = {
+//         path: '/p1'
+//     };
+//     res.cookie('coockieLimitedToRoute_p1', 'created', cookieConfig);
+//     res.json({ "I just created cookie for you": true });
+// });
+
+// app.get('/p1', (req, res) => {
+//     res.json({ "Cookie created to route p1": true });
+// });
+
+// app.get('/p2', (req, res) => {
+//     res.json({ "Cookie not created to route p2": false });
+// });
+
+// <----------------------------------------------------->
+// 5 - 6)
+app.get('/getSecretCookie', (req, res) => {
     const cookieConfig = {
-        path: '/p1'
+        signed: true // send only over https 
     };
-    res.cookie('coockieLimitedToRoute_p1', 'created', cookieConfig);
-    res.json({ "I just created cookie for you": true });
+    res.cookie('secretCookie', 'secret', cookieConfig);
+    res.json({ "You just made a request for cookie": true });
 });
 
-app.get('/p1', (req, res) => {
-    res.json({ "Cookie created to route p1": true });
+app.get('/sendSecretCookie', (req, res) => {
+    if (req.signedCookies.secretCookie) {
+        res.json({ 'Your secret cookie': req.signedCookies.secretCookie });
+    } else {
+        res.json({ 'Cookie response': "Did you mess with my cookie?" });
+    }
 });
 
-app.get('/p2', (req, res) => {
-    res.json({ "Cookie not created to route p2": false });
-});
+
+
+
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);

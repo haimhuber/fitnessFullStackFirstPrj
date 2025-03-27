@@ -46,28 +46,29 @@ async function showPlanDetalis() {
         }
         else {
             if (Array.isArray(data) && data.length > 0) {
-            data.forEach(item => {
-                // Creating the sub div to each member
-                const addedDiv = document.createElement('div');
-                addedDiv.classList.add('flexDiv');
-                // addedDiv.classList.add('addedDiv');
-                // Creating member deatilas as a 'p'
-                const planName = document.createElement('p');
-                const freqPerWeek = document.createElement('p');
-                const price = document.createElement('p');
-                planName.textContent = `Plan Name: ${item['planName']}`;
-                freqPerWeek.textContent = `Per Week: ${item['freqPerWeek']}`;
-                price.textContent = `Price: ${(item['price'])}$`;
-                // Appending each member to the sub div
-                addedDiv.appendChild(planName);
-                addedDiv.appendChild(freqPerWeek);
-                addedDiv.appendChild(price);
-                // Appending to the main div
-                myDiv.appendChild(addedDiv);
-            });
-        }}
-        
-        
+                data.forEach(item => {
+                    // Creating the sub div to each member
+                    const addedDiv = document.createElement('div');
+                    addedDiv.classList.add('flexDiv');
+                    // addedDiv.classList.add('addedDiv');
+                    // Creating member deatilas as a 'p'
+                    const planName = document.createElement('p');
+                    const freqPerWeek = document.createElement('p');
+                    const price = document.createElement('p');
+                    planName.textContent = `Plan Name: ${item['planName']}`;
+                    freqPerWeek.textContent = `Per Week: ${item['freqPerWeek']}`;
+                    price.textContent = `Price: ${(item['price'])}$`;
+                    // Appending each member to the sub div
+                    addedDiv.appendChild(planName);
+                    addedDiv.appendChild(freqPerWeek);
+                    addedDiv.appendChild(price);
+                    // Appending to the main div
+                    myDiv.appendChild(addedDiv);
+                });
+            }
+        }
+
+
     } catch (error) {
         console.error(error);
         document.querySelector("#dataFromSQL").textContent = 'Error fetching data from SQL server';
@@ -126,24 +127,24 @@ async function showAllUsers() {
                 myDiv.appendChild(addedDiv);
 
                 let inputMemberName = document.createElement('input');
-                     inputMemberName.classList.add('newAddedInput');
-                     inputMemberName.setAttribute('type', 'text');
-                     inputMemberName.value = item['fullName'];
+                inputMemberName.classList.add('newAddedInput');
+                inputMemberName.setAttribute('type', 'text');
+                inputMemberName.value = item['fullName'];
 
-                     let inputMemberEmail = document.createElement('input');
-                     inputMemberEmail.classList.add('newAddedInput');
-                     inputMemberEmail.setAttribute('type', 'text');
-                     inputMemberEmail.value = item['email'];
-                     
-                     let inputMemberPb = document.createElement('input');
-                     inputMemberPb.classList.add('newAddedInput');
-                     inputMemberPb.setAttribute('type', 'text');
-                     inputMemberPb.value = item['phoneNumber'];
+                let inputMemberEmail = document.createElement('input');
+                inputMemberEmail.classList.add('newAddedInput');
+                inputMemberEmail.setAttribute('type', 'text');
+                inputMemberEmail.value = item['email'];
 
-                     let inputMemberBod = document.createElement('input');
-                     inputMemberBod.classList.add('newAddedInput');
-                     inputMemberBod.setAttribute('type', 'text');
-                     inputMemberBod.value = new Date((item['dateOfBirth'])).toISOString().split("T")[0];
+                let inputMemberPb = document.createElement('input');
+                inputMemberPb.classList.add('newAddedInput');
+                inputMemberPb.setAttribute('type', 'text');
+                inputMemberPb.value = item['phoneNumber'];
+
+                let inputMemberBod = document.createElement('input');
+                inputMemberBod.classList.add('newAddedInput');
+                inputMemberBod.setAttribute('type', 'text');
+                inputMemberBod.value = new Date((item['dateOfBirth'])).toISOString().split("T")[0];
 
                 addedDiv.addEventListener('click', () => {
                     // Show buttons
@@ -153,7 +154,7 @@ async function showAllUsers() {
                     deleteButton.classList.add('smallDeleteButton');
                     // Creation of the body req - PUT Method
                     if (!flag) {
-                    // User name
+                        // User name
                         addedDiv.replaceChild(inputMemberName, memberName);
                         addedDiv.replaceChild(inputMemberEmail, memberEmail);
                         addedDiv.replaceChild(inputMemberPb, memberPhoneNunber);
@@ -165,14 +166,26 @@ async function showAllUsers() {
                         email: inputMemberEmail.value,
                         phonenumber: inputMemberPb.value,
                         dateOfBirth: inputMemberBod.value,
-                        userId : item['id']
+                        userId: item['id']
                     }
-                    // Test to view if the change has made
-                    console.log(updateMemeberTable);
-                    updateButton.addEventListener('click', async () => {
-                        console.log({"you sent": updateMemeberTable});
-                        
-                        userAction(updateMemeberTable);
+                    // Update Button
+                    updateButton.addEventListener('click', () => {
+                        let flag = true;
+                        if (flag) {
+                            console.log('Sent');
+                            flag = false;
+                            udpateUser(updateMemeberTable);
+                        }
+                    });
+                    // Delete Button
+                    deleteButton.addEventListener('click', () => {
+                        let flag = true;
+                        if (flag) {
+                            console.log('Sent');
+                            flag = false;
+                            deleteUser(updateMemeberTable['userId']);
+                        }
+
                     });
                 });
             });
@@ -180,40 +193,55 @@ async function showAllUsers() {
         // }
     } catch (Error) {
         console.log(Error);
-
     }
-
 }
+async function deleteUser(userId) {
+    try {
+        const response = await fetch(`http://localhost:5500/deleteUser/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-async function deleteUser() {
-    const dataFromUser = JSON.parse(dataToUpdate);
-}
+        const data = await response.json(); // Get response as text
+        console.log(data);
 
-async function userAction(dataToUpdate) {
-    const dataFromUser = JSON.parse(dataToUpdate);
-    if (buttonUserAction === '0') {
-        alert('Please pick an user action!');
-    } else if (buttonUserAction === '1') { //Update User
-        console.log('YES');
-
-        try {
-            const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dataFromUser),
-            });
-
-            const data = await response.json(); // Get response as text
-            console.log('Server Response:', data);
-        } catch (error) {
-            console.error('Error:', error);
+        if (data.status) {
+            alert('User deleted successfully');
+            window.location.reload();
         }
-
+    } catch (error) {
+        console.log(Error);
     }
 }
 
+async function udpateUser(dataToUpdate) {
+    const dataFromUser = dataToUpdate;
+    try {
+        const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataFromUser),
+        });
+
+        const data = await response.json(); // Get response as text
+        console.log(data.status);
+
+        if (data.status === 500 || data.status === 404) {
+            alert('Email must be unique');
+        } else {
+            alert('User updated successfully');
+            window.location.reload();
+        }
+    } catch (error) {
+
+        console.log(error);
+    }
+
+}
 
 
 async function sendForm(event) {

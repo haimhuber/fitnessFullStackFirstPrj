@@ -35,7 +35,7 @@ async function updateUser(userData) {
         const result = await pool.request()
             .input('fullName', userData.fullName)
             .input('email', userData.email)
-            .input('phoneNumber', userData.phoneNumber)
+            .input('phoneNumber', userData.phonenumber)
             .input('dateOfBirth', userData.dateOfBirth)
             .query(`UPDATE Members 
                     SET fullName = @fullName, 
@@ -46,12 +46,11 @@ async function updateUser(userData) {
 
         // Check if the row was updated
         if (result.rowsAffected[0] === 0) {
-            return { message: 'User ID 1 not found', status: 404 };
+            return { message: `User ID ${userData.userId} not found`, status: 404 };
         }
-        return { message: 'User ID 1 updated successfully!', status: 200 };
+        return { message: `User ID ${userData.userId} updated successfully!`, status: 200 };
     } catch (err) {
-        console.error('Error updating user:', err);
-        return { message: err, status: 500 };
+        return { 'Error updating user': err['message'], status: 500 };
     }
 };
 
@@ -74,7 +73,7 @@ async function insertingNewUser(userData) {
 
         // Check if the row was updated
         if (result.rowsAffected[0] === 0) {
-            return { message: 'User ID 1 not found', status: 404 };
+            return { message: `User ID ${userData.userId} not found`, status: 404 };
         }
         return { message: 'User inserted successfully!', status: 200 };
     } catch (err) {
@@ -85,7 +84,28 @@ async function insertingNewUser(userData) {
 
 module.exports.insertingNewUser = insertingNewUser;
 
+// Inserting users Data
+async function deletingUser(userId) {
+    console.log(userId);
 
+    try {
+        const pool = await connectionToSqlDB(); // Connect to DB
+
+        // Execute update query for user ID 1
+        const result = await pool.request()
+            .query(`DELETE FROM Members WHERE id = ${userId}`);
+
+        // Check if the row was updated
+        if (result.rowsAffected[0] === 0) {
+            return { message: `User ID ${userId} not found`, status: 404 };
+        }
+        return { message: 'User deleted successfully!', status: 200 };
+    } catch (err) {
+        //console.error('Error updating user:', err);
+        return { message: err.message, status: 500 };
+    }
+};
+module.exports.deletingUser = deletingUser;
 
 // Contact from form
 async function formContact(userData) {
@@ -122,8 +142,8 @@ async function getAllPlansData() {
     try {
         const pool = await connectionToSqlDB(); // Connect to DB
         const result = await pool.request().query('SELECT * FROM WorkoutPlans'); // Fetch all records
-        console.log({'Data imported successfully': 200});
-        
+        console.log({ 'Data imported successfully': 200 });
+
         return { data: result.recordsets[0] };
     } catch (err) {
         //next(err);
@@ -142,8 +162,8 @@ async function getAllUsersData() {
     try {
         const pool = await connectionToSqlDB(); // Connect to DB
         const result = await pool.request().query('SELECT * FROM Members'); // Fetch all records
-        console.log({'Data imported successfully': 200});
-        
+        console.log({ 'Data imported successfully': 200 });
+
         return { data: result.recordsets[0] };
     } catch (err) {
         //next(err);

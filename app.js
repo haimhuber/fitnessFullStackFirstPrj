@@ -39,12 +39,12 @@ app.get('/user-managment', (req, res) => {
 app.get('/users', async (req, res) => {
     const result = await myRepository.getAllUsersData();
     // console.log(result.data);
-    
+
     if (result.status === 500) {
-        res.json({"Error getting data" : false});
-    } else { 
+        res.json({ "Error getting data": false });
+    } else {
         res.send(result.data);
-        
+
     }
 });
 
@@ -52,10 +52,10 @@ app.get('/users', async (req, res) => {
 app.get('/plan', async (req, res) => {
     const result = await myRepository.getAllPlansData();
     if (result.status === 500) {
-        res.json({"Error getting data" : false});
-    } else { 
+        res.json({ "Error getting data": false });
+    } else {
         res.send(result.data);
-        
+
     }
 });
 
@@ -119,17 +119,18 @@ app.post('/join-us', async (req, res) => {
 app.put('/update-user/:userId', async (req, res) => {
     const userData = { fullName, email, phonenumber, dateOfBirth } = req.body;
     userData['userId'] = req.params.userId;
+
     try {
         const result = await myRepository.updateUser(userData); // Connect to DB
         switch (result.status) {
             case 200:
-                res.json(result);
+                res.send(result);
                 break;
             case 404:
-                res.json(result);
+                res.send(result);
                 break;
             case 500:
-                res.json(result);
+                res.send(result);
                 break;
             default:
                 break;
@@ -140,20 +141,14 @@ app.put('/update-user/:userId', async (req, res) => {
 });
 
 
-// <--------------------------------------------------------------------------------------->//
-app.put('/example-of-put-method/:paramId', async (req, res) => {
-    res.send({ 'Body Params': req.body, 'Param id': req.params.paramId });
-
-});
-
 // <---------------------------------Delete Mtehod------------------------------------------------------>//
 // Delete Method
-app.delete('/example-of-delete-method/:paramId', async (req, res) => {
-    if (req.body != undefined) {
-        res.send({ 'User sent empty body': req.body })
-    }
-    else {
-        res.send({ 'User send the body': req.body });
+app.delete('/deleteUser/:paramId?', async (req, res) => {
+    try {
+        const result = await myRepository.deletingUser(req.params.paramId); // Connect to DB
+        res.send(result);
+    } catch (err) {
+        res.send({ "Error": 500 });
     }
 });
 

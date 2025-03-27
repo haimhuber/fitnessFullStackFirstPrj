@@ -116,12 +116,14 @@ async function formContact(userData) {
 module.exports.formContact = formContact;
 
 
-// Getting users Data
+// Getting plans Data
 async function getAllPlansData() {
 
     try {
         const pool = await connectionToSqlDB(); // Connect to DB
         const result = await pool.request().query('SELECT * FROM WorkoutPlans'); // Fetch all records
+        console.log({'Data imported successfully': 200});
+        
         return { data: result.recordsets[0] };
     } catch (err) {
         //next(err);
@@ -132,3 +134,23 @@ async function getAllPlansData() {
 };
 
 module.exports.getAllPlansData = getAllPlansData;
+
+
+// Getting users Data
+async function getAllUsersData() {
+
+    try {
+        const pool = await connectionToSqlDB(); // Connect to DB
+        const result = await pool.request().query('SELECT * FROM Members'); // Fetch all records
+        console.log({'Data imported successfully': 200});
+        
+        return { data: result.recordsets[0] };
+    } catch (err) {
+        //next(err);
+        console.error('Error imported successfully!:', err);
+        return { message: err, status: 500 };
+
+    }
+};
+
+module.exports.getAllUsersData = getAllUsersData;

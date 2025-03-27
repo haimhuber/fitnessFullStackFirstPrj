@@ -37,22 +37,26 @@ app.get('/user-managment', (req, res) => {
 // <---------------------------------Get Mtehod------------------------------------------------------>//
 // Dispalys all users names
 app.get('/users', async (req, res) => {
-    try {
-        const pool = await myRepository.connectionToSqlDB();
-        const result = await pool.request().query('SELECT * FROM Members');
-        res.json(result.recordset); // Send data as JSON response
-    } catch (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).json({ error: 'Database query error' });
+    const result = await myRepository.getAllUsersData();
+    // console.log(result.data);
+    
+    if (result.status === 500) {
+        res.json({"Error getting data" : false});
+    } else { 
+        res.send(result.data);
+        
     }
 });
 
 // Dispalys all plan names
 app.get('/plan', async (req, res) => {
     const result = await myRepository.getAllPlansData();
-    console.log(result.data);
-    res.send(result.data);
-
+    if (result.status === 500) {
+        res.json({"Error getting data" : false});
+    } else { 
+        res.send(result.data);
+        
+    }
 });
 
 // <---------------------------------Post Mtehod------------------------------------------------------>//

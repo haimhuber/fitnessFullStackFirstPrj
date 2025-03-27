@@ -16,6 +16,30 @@ body {
     margin: auto;
 }
 
+.newAddedInput {
+    width: 200px;
+    margin: auto;
+}
+
+.hide{
+    display: none;
+}
+
+.smallButton{
+    width: 70px;
+    margin: auto;
+    background-color: rgb(36, 39, 32);
+    color: #f4f4f4;
+    border: 3px wheat solid;
+}
+.smallDeleteButton{
+    width: 70px;
+    margin: auto;
+    background-color: rgb(221, 48, 48);
+    color: #191414;
+    border: 3px rgb(149, 123, 76) solid;
+}
+
 h1 {
     color: #a93d3d;
 }

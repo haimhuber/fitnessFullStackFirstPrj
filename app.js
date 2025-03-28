@@ -34,6 +34,11 @@ app.get('/contact-page', (req, res) => {
 app.get('/user-managment', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'userManagment.html'));
 });
+
+// Go to Thank you - page
+app.get('/thank-you', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'thankYou.html'));
+});
 // <---------------------------------Get Mtehod------------------------------------------------------>//
 // Dispalys all users names
 app.get('/users', async (req, res) => {
@@ -64,6 +69,7 @@ app.get('/plan', async (req, res) => {
 app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body; // Get data from request body
     const userData = { name, email, subject, message };
+    console.log(userData);
 
     // Validate required fields
     if (!name || !email || !subject || !message) {
@@ -124,13 +130,13 @@ app.put('/update-user/:userId', async (req, res) => {
         const result = await myRepository.updateUser(userData); // Connect to DB
         switch (result.status) {
             case 200:
-                res.send(result);
+                res.send(result.status);
                 break;
             case 404:
-                res.send(result);
+                res.send(result.status);
                 break;
             case 500:
-                res.send(result);
+                res.send(result.status);
                 break;
             default:
                 break;

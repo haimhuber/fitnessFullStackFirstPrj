@@ -21,18 +21,19 @@ body {
     margin: auto;
 }
 
-.hide{
+.hide {
     display: none;
 }
 
-.smallButton{
+.smallButton {
     width: 70px;
     margin: auto;
     background-color: rgb(36, 39, 32);
     color: #f4f4f4;
     border: 3px wheat solid;
 }
-.smallDeleteButton{
+
+.smallDeleteButton {
     width: 70px;
     margin: auto;
     background-color: rgb(221, 48, 48);
@@ -89,7 +90,7 @@ nav ul li {
 
 .btn {
     display: inline-block;
-    background: rgb(217, 50, 50);
+    background: rgb(184, 29, 29);
     color: white;
     padding: 10px 20px;
     text-decoration: none;
@@ -97,7 +98,9 @@ nav ul li {
 }
 
 .btn:hover {
-    background: #ff4500;
+    background: #0a6230;
+    border: 3px black solid;
+    box-shadow: #a93d3d;
 }
 
 section {
@@ -166,8 +169,10 @@ footer {
 }
 
 .joinUsClass:hover {
-    background-color: #ff4500;
-    font-weight: 900;
+    background-color: #de1212;
+    font-weight: 600;
+    color: #191414;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 

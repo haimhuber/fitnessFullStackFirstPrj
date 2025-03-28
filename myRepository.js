@@ -109,13 +109,10 @@ module.exports.deletingUser = deletingUser;
 
 // Contact from form
 async function formContact(userData) {
-
     try {
         const pool = await connectionToSqlDB(); // Connect to DB
-
         // Execute update query for user ID 1
         const result = await pool.request()
-        await pool.request()
             .input('name', userData.name)
             .input('email', userData.email)
             .input('subject', userData.subject)

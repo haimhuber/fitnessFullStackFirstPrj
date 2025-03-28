@@ -185,7 +185,6 @@ async function showAllUsers() {
                             flag = false;
                             deleteUser(updateMemeberTable['userId']);
                         }
-
                     });
                 });
             });
@@ -195,6 +194,7 @@ async function showAllUsers() {
         console.log(Error);
     }
 }
+// Delete clicked user by his ID
 async function deleteUser(userId) {
     try {
         const response = await fetch(`http://localhost:5500/deleteUser/${userId}`, {
@@ -203,7 +203,6 @@ async function deleteUser(userId) {
                 'Content-Type': 'application/json',
             },
         });
-
         const data = await response.json(); // Get response as text
         console.log(data);
 
@@ -215,35 +214,43 @@ async function deleteUser(userId) {
         console.log(Error);
     }
 }
-
+// Updating user by his ID
 async function udpateUser(dataToUpdate) {
     const dataFromUser = dataToUpdate;
-    try {
-        const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataFromUser),
-        });
-
-        const data = await response.json(); // Get response as text
-        console.log(data.status);
-
-        if (data.status === 500 || data.status === 404) {
-            alert('Email must be unique');
-        } else {
-            alert('User updated successfully');
-            window.location.reload();
+    function checkFieldsOnUpdate() {
+        for (const [key, value] of Object.entries(dataFromUser)) {
+            if (!value) {
+                alert(`${key} field is empty! Please enter value!`);
+                const emptyFiledDetected = true;
+                return emptyFiledDetected;
+            }
         }
-    } catch (error) {
-
-        console.log(error);
     }
+    if (checkFieldsOnUpdate()) {
+        console.log("YES");
+    } else {
+        try {
+            const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataFromUser),
+            });
 
+            const data = await response.text(); // Get response as text
+
+            if (data.status === 500 || data.status === 404) {
+                alert('Email must be unique');
+            } else {
+                alert('User updated successfully');
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }
-
-
 async function sendForm(event) {
     event.preventDefault();
     // Collecting form data
@@ -251,13 +258,10 @@ async function sendForm(event) {
         name: document.getElementById('firstname').value,
         email: document.getElementById('email').value,
         subject: document.getElementById('subject').value,
-        message: document.getElementById('message').value,
-        table: 'ContactForm'
+        message: document.getElementById('message').value
     };
-
     // Convert formData to URL-encoded string
     const urlEncodedData = new URLSearchParams(formData).toString();
-
     try {
         const response = await fetch('http://localhost:5500/contact', {
             method: 'POST',
@@ -266,20 +270,18 @@ async function sendForm(event) {
             },
             body: urlEncodedData // Sending as URL-encoded string
         });
-
         const data = await response.text(); // Get response as text
-        console.log(data);
-        window.location.href = 'http://127.0.0.1:5500/public/thankYou.html';  // Replace with your main page URL 
-
+        if (data === "OK") {
+            window.location.href = "http://localhost:5500/thankYou.html";
+        } else {
+            alert("There was a problem sending request. Please try again later")
+        }
         // document.getElementById('responseMessage').innerText = data; // Show response
     } catch (error) {
         console.error('Error:', error);
         // document.getElementById('responseMessage').innerText = 'Error sending message!';
         console.log("Form cannot be sended");
-
     }
-
-
 }
 
 // Join - Us button
@@ -324,10 +326,10 @@ async function joinUs() {
             console.log("User cannot be insreted");
             return;
         } else if (data === "OK") {
-            alert("Thank you! Our staff will reach out shortly");
+            alert(`Welcome to our team ${queryToMemeberTable.fullName}! Our staff will reach out shortly`);
             window.location.href = 'http://127.0.0.1:5500/public/about.html'; // Page refresh
         } else if (data === "Internal Server Error") {
-            alert("Email must be unique!");
+            alert("Email is alreay in use please use diffrent email!");
         }
 
         // document.getElementById('responseMessage').innerText = data; // Show response

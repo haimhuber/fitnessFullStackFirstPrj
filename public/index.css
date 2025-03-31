@@ -234,3 +234,102 @@ button {
 button:hover {
     background: #ff4500;
 }
+
+
+
+/* sign in page */
+.signin-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.signin-container h2 {
+    text-align: center;
+}
+
+.signin-container input {
+    width: 80%;
+    padding: 8px;
+    margin: 10px -5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.signin-container button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+}
+
+.signin-container button:hover {
+    background-color: #0056b3;
+}
+
+/* login page */
+
+.login-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.pIndex {
+    color: #191414;
+}
+
+.pIndexOffer {
+    color: #191414;
+    font-weight: 900;
+    font-size: large;
+}
+
+.login-container h2 {
+    text-align: center;
+}
+
+.login-container input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px -5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.login-btn:hover {
+    background-color: #218838;
+}
+
+.signin-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.signin-btn:hover {
+    background-color: #0056b3;
+}

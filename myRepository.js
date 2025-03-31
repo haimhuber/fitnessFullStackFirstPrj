@@ -171,3 +171,31 @@ async function getAllUsersData() {
 };
 
 module.exports.getAllUsersData = getAllUsersData;
+
+
+// Sing Up new user
+async function signUpNewUser(userData) {
+    try {
+        const pool = await connectionToSqlDB(); // Connect to DB
+
+        // Execute update query for user ID 1
+        const result = await pool.request()
+            .input('fullName', userData.fullName)
+            .input('email', userData.email)
+            .input('userName', userData.userName)
+            .input('password', userData.password)
+            .input('phoneNumber', userData.phoneNumber)
+            .input('dateOfBirth', userData.dateOfBirth)
+            .query(`INSERT INTO Members (fullName, email, userName, password, phoneNumber, dateOfBirth) VALUES (@fullName, @email, @userName, @password, @phoneNumber, @dateOfBirth)`);
+
+        // Check if the row was updated
+        if (result.rowsAffected[0] === 0) {
+            return { message: "Can't add user info - Check DB", status: 404 };
+        }
+        return { message: `User login details insreted correctly`, status: 200 };
+    } catch (err) {
+        return { status: 500 };
+    }
+};
+
+module.exports.signUpNewUser = signUpNewUser;

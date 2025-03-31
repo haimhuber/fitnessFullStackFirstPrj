@@ -27,24 +27,15 @@ GO
 
 
 	/*------------   Create tables   --------------*/
-
 	CREATE TABLE Members (
 		id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 		fullName varchar(255) NOT NULL,
 		email varchar(255)UNIQUE NOT NULL,
+		userName  varchar(255)NOT NULL,
+		password   varchar(255) NOT NULL,
 		phoneNumber varchar(15) NOT NULL,
 		dateOfBirth DATE NOT NULL,
-		joinDate DATE DEFAULT GETDATE()
-	);
-	
-	CREATE TABLE MembersLoginsDetails (
-		id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-		memberId INT NOT NULL,
-		userName  varchar(255)NOT NULL,
-		email varchar(255) NOT NULL,
-		password   varchar(255) NOT NULL,
-		usreCreated DATE DEFAULT GETDATE(),
-		FOREIGN KEY (memberId) REFERENCES Members(id) ON DELETE CASCADE
+		joinDate DATE DEFAULT GETDATE(),
 	);
 	
 	CREATE TABLE ContactForm (
@@ -121,40 +112,39 @@ GO
 	GO
 
 /* ------------------------ Insert Data into Tables -------------------- */
-/* Members */
-INSERT INTO Members (fullName, email, phoneNumber, dateOfBirth) VALUES
-('John Doe', 'john.doe@example.com', '555-1234', '1990-05-14'),
-('Jane Smith', 'jane.smith@example.com', '555-5678', '1985-08-22'),
-('Michael Johnson', 'michael.johnson@example.com', '555-8765', '1992-03-11'),
-('Emily Davis', 'emily.davis@example.com', '555-4321', '1988-01-25'),
-('Chris Lee', 'chris.lee@example.com', '555-6789', '1995-09-10'),
-('Sarah Brown', 'sarah.brown@example.com', '555-2345', '1990-12-05'),
-('David Wilson', 'david.wilson@example.com', '555-3456', '1987-06-13'),
-('Laura Martin', 'laura.martin@example.com', '555-4567', '1993-02-20'),
-('Matthew Moore', 'matthew.moore@example.com', '555-5679', '1980-07-30'),
-('Olivia Taylor', 'olivia.taylor@example.com', '555-6780', '1996-11-03'),
-('James Anderson', 'james.anderson@example.com', '555-7890', '1989-04-12'),
-('Hannah Thomas', 'hannah.thomas@example.com', '555-8901', '1994-10-25'),
-('Daniel Jackson', 'daniel.jackson@example.com', '555-9012', '1991-02-15'),
-('Sophia White', 'sophia.white@example.com', '555-0123', '1986-09-08'),
-('William Harris', 'william.harris@example.com', '555-1235', '1984-03-19'),
-('Abigail Clark', 'abigail.clark@example.com', '555-2346', '1993-06-17'),
-('Ethan Lewis', 'ethan.lewis@example.com', '555-3457', '1998-01-30'),
-('Chloe Robinson', 'chloe.robinson@example.com', '555-4568', '1987-12-09'),
-('Benjamin Walker', 'benjamin.walker@example.com', '555-5670', '1990-05-21'),
-('Avery Young', 'avery.young@example.com', '555-6781', '1982-04-02'),
-('Megan King', 'megan.king@example.com', '555-7891', '1989-07-07'),
-('Lucas Scott', 'lucas.scott@example.com', '555-8902', '1996-12-12'),
-('Grace Adams', 'grace.adams@example.com', '555-9013', '1997-11-11'),
-('Jacob Nelson', 'jacob.nelson@example.com', '555-0124', '1985-02-28'),
-('Madison Carter', 'madison.carter@example.com', '555-1236', '1991-08-10'),
-('Evan Mitchell', 'evan.mitchell@example.com', '555-2347', '1983-10-22'),
-('Zoe Perez', 'zoe.perez@example.com', '555-3458', '1992-07-18'),
-('Mason Roberts', 'mason.roberts@example.com', '555-4569', '1994-12-01'),
-('Isabella Gonzalez', 'isabella.gonzalez@example.com', '555-5671', '1995-05-16'),
-('Samuel Moore', 'samuel.moore@example.com', '555-6782', '1990-01-29'),
-('Victoria White', 'victoria.white@example.com', '555-7892', '1992-11-07'),
-('Aidan Martinez', 'aidan.martinez@example.com', '555-8903', '1988-02-19');
+/* Members Details*/
+INSERT INTO Members (fullName, email, userName, password, phoneNumber, dateOfBirth) VALUES
+('John Doe', 'john.doe@example.com', 'john_doe', 'password123', '555-0100', '1990-01-01'),
+('Jane Smith', 'jane.smith@example.com', 'jane_smith', 'securepass!', '555-0101', '1992-02-14'),
+('Mike Jones', 'mike.jones@example.com', 'mike_jones', 'mikepass2024', '555-0102', '1988-04-05'),
+('Sarah Lee', 'sarah.lee@example.com', 'sarah_lee', 'sarahSecure99', '555-0103', '1995-06-17'),
+('David Brown', 'david.brown@example.com', 'david_brown', 'davidPass@321', '555-0104', '1985-08-23'),
+('Linda White', 'linda.white@example.com', 'linda_white', 'linda$pass', '555-0105', '1991-11-30'),
+('Robert Clark', 'robert.clark@example.com', 'robert_clark', 'robert!123', '555-0106', '1984-09-11'),
+('Emily Hall', 'emily.hall@example.com', 'emily_hall', 'emilyPass789', '555-0107', '1993-03-22'),
+('William Evans', 'william.evans@example.com', 'william_evans', 'willSecure321', '555-0108', '1987-07-15'),
+('Olivia Martin', 'olivia.martin@example.com', 'olivia_martin', 'oliviaPass999', '555-0109', '1990-12-02'),
+('James Taylor', 'james.taylor@example.com', 'james_taylor', 'jamesT@2024', '555-0110', '1989-02-18'),
+('Charlotte Wilson', 'charlotte.wilson@example.com', 'charlotte_wilson', 'charlottePass', '555-0111', '1994-05-29'),
+('Daniel Thomas', 'daniel.thomas@example.com', 'daniel_thomas', 'daniel!pass', '555-0112', '1986-04-12'),
+('Sophia Walker', 'sophia.walker@example.com', 'sophia_walker', 'sophiaPass987', '555-0113', '1992-01-09'),
+('Matthew Harris', 'matthew.harris@example.com', 'matthew_harris', 'matthew$123', '555-0114', '1983-10-06'),
+('Amelia Robinson', 'amelia.robinson@example.com', 'amelia_robinson', 'ameliaPass111', '555-0115', '1996-07-24'),
+('Benjamin King', 'benjamin.king@example.com', 'benjamin_king', 'benjaminPass@555', '555-0116', '1990-03-17'),
+('Isabella Scott', 'isabella.scott@example.com', 'isabella_scott', 'isabellaSecure', '555-0117', '1994-12-25'),
+('Lucas Adams', 'lucas.adams@example.com', 'lucas_adams', 'lucasPass!456', '555-0118', '1991-01-13'),
+('Mia Baker', 'mia.baker@example.com', 'mia_baker', 'miaPass$789', '555-0119', '1992-08-19'),
+('Henry Mitchell', 'henry.mitchell@example.com', 'henry_mitchell', 'henrySecurePass', '555-0120', '1987-05-30'),
+('Ava Perez', 'ava.perez@example.com', 'ava_perez', 'avaPass@777', '555-0121', '1993-11-04'),
+('Ethan Carter', 'ethan.carter@example.com', 'ethan_carter', 'ethanPass333', '555-0122', '1985-02-20'),
+('Grace Collins', 'grace.collins@example.com', 'grace_collins', 'gracePass555', '555-0123', '1996-09-10'),
+('Alexander Morris', 'alexander.morris@example.com', 'alexander_morris', 'alexanderPass999', '555-0124', '1988-12-14'),
+('Ella Cooper', 'ella.cooper@example.com', 'ella_cooper', 'ellaSecure123', '555-0125', '1994-04-03'),
+('Samuel Reed', 'samuel.reed@example.com', 'samuel_reed', 'samuel!pass', '555-0126', '1990-06-22'),
+('Chloe Bell', 'chloe.bell@example.com', 'chloe_bell', 'chloePass888', '555-0127', '1989-11-17'),
+('Jackson Wright', 'jackson.wright@example.com', 'jackson_wright', 'jacksonPass!222', '555-0128', '1991-03-09'),
+('Victoria Foster', 'victoria.foster@example.com', 'victoria_foster', 'victoriaPass444', '555-0129', '1992-05-01');
+
 
 
 GO
@@ -307,13 +297,13 @@ VALUES
 (16, 15), (17, 3), (18, 7), (19, 10), (20, 25),
 (21, 30), (22, 2), (23, 18), (24, 21), (25, 35),
 (26, 40), (27, 1), (28, 9), (29, 13), (30, 28),
-(31, 32), (1, 6), (2, 14), (3, 22), (4, 37),
+(21, 32), (1, 6), (2, 14), (3, 22), (4, 37),
 (5, 39), (6, 4), (7, 19), (8, 23), (9, 31),
 (10, 36), (11, 16), (12, 11), (13, 29), (14, 34),
 (15, 41), (16, 17), (17, 24), (18, 26), (19, 38),
 (20, 33), (21, 27), (22, 5), (23, 12), (24, 8),
 (25, 20), (26, 15), (27, 3), (28, 7), (29, 10),
-(30, 25), (31, 30), (1, 2), (2, 18), (3, 21),
+(30, 25), (23, 30), (1, 2), (2, 18), (3, 21),
 (4, 35), (5, 40);
 
 
@@ -418,8 +408,7 @@ VALUES
 (93, 44.99, 'Bank Transfer', 'Verified'),
 (94, 34.99, 'Google Pay', 'Verified'),
 (95, 54.99, 'Apple Pay', 'Verified'),
-(96, 79.99, 'Credit Card', 'Verified'),
-(97, 74.99, 'Paypal', 'Verified');
+(96, 79.99, 'Credit Card', 'Verified')
 
 GO
 

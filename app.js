@@ -9,11 +9,34 @@ app.use(express.urlencoded({ extended: true }));
 const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, 'public')));
 const cors = require("cors");
-const { log } = require('console');
+const cookieparser = require('cookie-parser');
+app.use(cookieparser());
 
 const port = process.env.PORT || 5500;
 app.use(cors());
+
+// Middleware for login tests
+// app.use((req, res, next) => {
+//     if (!req.cookies.userLogIn) {
+//         console.log("You didn't made any action in the last 2 min. Please log again");
+//         res.redirect('http://localhost:5500/login.html');
+//     }
+
+//     next();
+// });
+
+
+
 // <-------------------------Pages-------------------------------------------->
+// login Page
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+// signin Page
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
 //About Page
 app.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'about.html'));
@@ -97,28 +120,32 @@ app.post('/contact', async (req, res) => {
 
 
 // <--------------------------------------------------------------------------------------->//
-// Join post to add new join request
-app.post('/join-us', async (req, res) => {
+// Adding new user login details
+app.post('/signupNewUser', async (req, res) => {
 
-    const { fullName, email, phoneNumber, dateOfBirth } = req.body;
-    const userData = { fullName, email, phoneNumber, dateOfBirth };
+    const { fullName, email, userName, password, phoneNumber, dateOfBirth } = req.body;
+    const userData = { fullName, email, userName, password, phoneNumber, dateOfBirth };
+    console.log(userData);
+
     try {
-        const result = await myRepository.insertingNewUser(userData); // Connect to DB
+        const result = await myRepository.signUpNewUser(userData); // Connect to DB
         switch (result.status) {
             case 200:
-                res.send(result.status);
+                console.log(result.status);
                 break;
             case 404:
-                res.send(result.status);
+                console.log(result.status);
                 break;
             case 500:
-                res.send(result.status);
+                console.log(result.status);
                 break;
         }
     } catch (err) {
-        res.status(500).send(`Something went wrong - ${err}`);
+        console.log(err);
+        ;
     }
 });
+
 
 
 // <---------------------------------Put Mtehod------------------------------------------------------>//

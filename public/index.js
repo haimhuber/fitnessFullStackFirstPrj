@@ -285,7 +285,7 @@ async function sendForm(event) {
 }
 
 // Join - Us button
-async function joinUs() {
+async function signUpUser() {
     let dateOfBirth = new Date();
     const dateInput = document.querySelector("#birthOfDate").value;
 
@@ -296,25 +296,24 @@ async function joinUs() {
     }
     const queryToMemeberTable = {
         fullName: document.querySelector("#fullName").value,
+        userName: document.querySelector("#userName").value,
         email: document.querySelector("#email").value,
-        phoneNumber: document.querySelector("#phonenumber").value,
+        phoneNumber: document.querySelector("#phoneNumber").value,
+        password: "",
         dateOfBirth: dateOfBirth
     }
-    for (let key in queryToMemeberTable) {
-        if (queryToMemeberTable.hasOwnProperty(key)) {  // Ensure the key is part of the object
-            const value = queryToMemeberTable[key];
-            if (!value) {  // Check if the value is falsy (e.g., empty string, null, undefined)
-                alert("Fill all fields!");
-                return; // return
-            }
-        }
+    if (tempPassword != confirmPassword) {
+        alert('Password are not match');
+    } else {
+        queryToMemeberTable['password'] = document.querySelector("#password").value;
     }
+
     // console.log(queryToMemeberTable);
     try {
-        const response = await fetch('http://localhost:5500/join-us', {
+        const response = await fetch('http://localhost:5500/signupNewUser', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json', // Sending as x-www-form-urlencoded
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(queryToMemeberTable) //  Convert object to JSON string
         });
@@ -327,7 +326,7 @@ async function joinUs() {
             return;
         } else if (data === "OK") {
             alert(`Welcome to our team ${queryToMemeberTable.fullName}! Our staff will reach out shortly`);
-            window.location.href = 'http://127.0.0.1:5500/public/about.html'; // Page refresh
+            window.location.href = 'http://127.0.0.1:5500/public/thankYou.html'; // Page refresh
         } else if (data === "Internal Server Error") {
             alert("Email is alreay in use please use diffrent email!");
         }
@@ -339,4 +338,30 @@ async function joinUs() {
     }
 }
 
+
+function signUp() {
+    window.location.href = "http://localhost:5500/signup.html";
+}
+
+
+async function signUpUser() {
+    const userName = document.querySelector('#userName').value;
+    const email = document.querySelector('#email').value;
+    const password = '';
+    const tempPassword = document.querySelector('#password').value;
+    const confirmPassword = document.querySelector('#confirmPassword').value;
+    if (tempPassword != confirmPassword) {
+        alert('Password are not match');
+    } else {
+        password = tempPassword;
+        // const userSigningDetails = {
+        //     memnerId: ,
+        //     userName: userName,
+        //     email: email,
+        //     password: password
+        // }
+    }
+
+
+};
 

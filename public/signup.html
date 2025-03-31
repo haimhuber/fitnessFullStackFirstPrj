@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="signin-container">
+        <h2>Sign Up</h2>
+        <input type="text" id="fullName" placeholder="Full Name" required>
+        <input type="text" id="userName" placeholder="User Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="tel" id="phoneNumber" placeholder="Phone Nmuber" required>
+        <input type="date" id="birthOfDate" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <button onclick="signUpUser()">Sign Up</button>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

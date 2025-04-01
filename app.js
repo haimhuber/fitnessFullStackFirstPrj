@@ -16,14 +16,22 @@ const port = process.env.PORT || 5500;
 app.use(cors());
 
 // Middleware for login tests
-// app.use((req, res, next) => {
-//     if (!req.cookies.userLogIn) {
-//         console.log("You didn't made any action in the last 2 min. Please log again");
-//         res.redirect('http://localhost:5500/login.html');
-//     }
+app.use('/class', (req, res, next) => {
+    if (!req.cookies.userLogIn) {
+        console.log("You didn't made any action in the last 2 min. Please log again");
+        res.redirect('http://localhost:5500/login.html');
+    }
 
-//     next();
-// });
+    next();
+});
+app.use('/user-managment', (req, res, next) => {
+    if (!req.cookies.userLogIn) {
+        console.log("You didn't made any action in the last 2 min. Please log again");
+        res.redirect('http://localhost:5500/login.html');
+    }
+
+    next();
+});
 
 
 
@@ -125,23 +133,24 @@ app.post('/signupNewUser', async (req, res) => {
 
     const { fullName, email, userName, password, phoneNumber, dateOfBirth } = req.body;
     const userData = { fullName, email, userName, password, phoneNumber, dateOfBirth };
-    console.log(userData);
 
     try {
         const result = await myRepository.signUpNewUser(userData); // Connect to DB
         switch (result.status) {
             case 200:
-                console.log(result.status);
-                break;
+                return res.status(200).send("OK");
+
             case 404:
                 console.log(result.status);
-                break;
+                return res.status(400).send("Bad request");
+
             case 500:
                 console.log(result.status);
-                break;
+                return res.status(500).send("Internal server error");
+
         }
     } catch (err) {
-        console.log(err);
+        return res.send(err);
         ;
     }
 });

@@ -190,9 +190,9 @@ async function signUpNewUser(userData) {
 
         // Check if the row was updated
         if (result.rowsAffected[0] === 0) {
-            return { message: "Can't add user info - Check DB", status: 404 };
+            return { status: 400 };
         }
-        return { message: `User login details insreted correctly`, status: 200 };
+        return { status: 200 };
     } catch (err) {
         return { status: 500 };
     }

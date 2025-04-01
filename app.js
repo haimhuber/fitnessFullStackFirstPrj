@@ -10,30 +10,50 @@ const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, 'public')));
 const cors = require("cors");
 const cookieparser = require('cookie-parser');
-app.use(cookieparser());
+app.use(cookieparser('secret'));
 
 const port = process.env.PORT || 5500;
 app.use(cors());
 
+
+const cookieConfig = {
+    maxAge: (2 * 60) * 1000,
+    signed: true,// if we use secret with cookieParser
+    // for which routes should the browser send the cookie
+    // path: '/',
+    // SameSite: 'Lax'
+};
+
 // Middleware for login tests
 app.use('/class', (req, res, next) => {
-    if (!req.cookies.userLogIn) {
+    if (!req.signedCookies.loginCookie) {
         console.log("You didn't made any action in the last 2 min. Please log again");
-        res.redirect('http://localhost:5500/login.html');
+        return res.redirect('http://localhost:5500/login.html');
+    } else {
+        res.cookie('loginCookie', 'singedCoockie', cookieConfig);
+        console.log({ "Cookie updated": Date.now() });
+
     }
 
     next();
 });
 app.use('/user-managment', (req, res, next) => {
-    if (!req.cookies.userLogIn) {
+    if (!req.signedCookies.loginCookie) {
         console.log("You didn't made any action in the last 2 min. Please log again");
-        res.redirect('http://localhost:5500/login.html');
+        return res.redirect('http://localhost:5500/login.html');
+    } else {
+        res.cookie('loginCookie', 'singedCoockie', cookieConfig);
+        console.log({ "Cookie updated": Date.now() });
     }
 
     next();
 });
 
-
+// Login coockie creator
+app.get('/create-my-coockie', (req, res) => {
+    res.cookie('loginCookie', 'singedCoockie', cookieConfig);
+    res.send({ "You created signed cookie": req.signedCookies.loginCookie });
+});
 
 // <-------------------------Pages-------------------------------------------->
 // login Page
@@ -112,7 +132,7 @@ app.post('/contact', async (req, res) => {
                 case 200:
                     return res.status(200).send("OK");
                 case 404:
-                    return res.status(404).send("User not found");
+                    return res.status(404).send("Bad request");
                 case 500:
                     return res.status(500).send("Internal server error");
             }

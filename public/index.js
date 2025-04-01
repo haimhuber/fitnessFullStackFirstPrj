@@ -1,20 +1,3 @@
-// Radio button global variable
-// User Action -> Update / Delete
-let buttonUserAction = 0;
-
-// Check which radio button client picked
-document.querySelectorAll('.radioButoons').forEach((radio) => {
-    radio.addEventListener('click', () => {
-        buttonUserAction = radio.value;
-    })
-})
-// <------------------------------------------------>
-const action = document.createElement('input');
-action.classList.add('userActionsButton');
-action.setAttribute('type', 'button');
-action.setAttribute('value', 'Send');
-// <----------------------------------------------------------------->
-
 function highlight() {
     let navItems = document.getElementsByClassName('navigator');
     Array.from(navItems).forEach(item => {
@@ -43,6 +26,7 @@ async function showPlanDetalis() {
         const myDiv = document.querySelector("#class-from-db");
         if (data["Error getting data"] === false) {
             myDiv.textContent = "Server Error! Please check DB connection";
+            return;
         }
         else {
             if (Array.isArray(data) && data.length > 0) {
@@ -67,16 +51,11 @@ async function showPlanDetalis() {
                 });
             }
         }
-
-
     } catch (error) {
         console.error(error);
         document.querySelector("#dataFromSQL").textContent = 'Error fetching data from SQL server';
-
     }
 }
-
-
 async function showAllUsers() {
     try {
         const response = await fetch(`http://localhost:5500/users`);
@@ -209,6 +188,7 @@ async function deleteUser(userId) {
         if (data.status) {
             alert('User deleted successfully');
             window.location.reload();
+            return;
         }
     } catch (error) {
         console.log(Error);
@@ -241,9 +221,11 @@ async function udpateUser(dataToUpdate) {
 
             if (data.status === 500 || data.status === 404) {
                 alert('Email must be unique');
+                return;
             } else {
                 alert('User updated successfully');
                 window.location.reload();
+                return;
             }
         } catch (error) {
             console.error(error);
@@ -272,8 +254,12 @@ async function sendForm(event) {
         const data = await response.text(); // Get response as text
         if (data === "OK") {
             window.location.href = "http://localhost:5500/thankYou.html";
-        } else {
-            alert("There was a problem sending request. Please try again later")
+            console.log({ "Form sent": formData });
+
+            return;
+        } else if (data === "Bad request") {
+            alert("There was a problem sending request. Please try again later");
+            return;
         }
         // document.getElementById('responseMessage').innerText = data; // Show response
     } catch (error) {
@@ -316,7 +302,6 @@ async function signUpUser() {
             if (!value) {
                 alert("Please fill all fields!");
                 console.log(queryToMemeberTable);
-
                 return; // If any field is empty - Don't send it!
             }
         }
@@ -356,27 +341,38 @@ async function signUpUser() {
 function signUp() {
     window.location.href = "http://localhost:5500/signup.html";
 }
-
-
 async function login() {
     const email = document.querySelector("#email").value;
     const password = document.querySelector("#password").value;
+    let createCookie = false;
+    let userIndex = 0;
     try {
         const response = await fetch(`http://localhost:5500/users`);
         const data = await response.json();
         let found = false;
-        for (let i = 0; i < data.length; i++)
+        for (let i = 0; i < data.length; i++) {
             if (data[i]['email'] === email && data[i]['password'] === password) {
-                console.log("Coockie created!"); // Add cookie to login
-                return;
+                createCookie = true;
+                userIndex = i;
+                break;
             }
-        console.log("Not match");
+        }
+        if (createCookie) {
+            const cookieResponse = await fetch('http://localhost:5500/create-my-coockie');
+            const cookieData = await cookieResponse.json();
+            console.log(cookieData);
+            window.location.href = "http://localhost:5500/index.html";
+            return;
 
-
+        } else {
+            alert("Email or password are wrong")
+            console.log("Not match");
+            return;
+        }
 
 
     } catch (err) {
-        console.log(err);
+        console.log({ "Massage error": err });
     }
 
 }

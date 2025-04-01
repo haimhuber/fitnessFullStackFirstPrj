@@ -144,7 +144,7 @@ async function getAllPlansData() {
         return { data: result.recordsets[0] };
     } catch (err) {
         //next(err);
-        console.error('Error imported successfully!:', err);
+        console.error('Error imported!:', err);
         return { message: err, status: 500 };
 
     }

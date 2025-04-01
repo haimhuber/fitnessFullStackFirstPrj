@@ -77,9 +77,9 @@ app.get('/users', async (req, res) => {
     // console.log(result.data);
 
     if (result.status === 500) {
-        res.json({ "Error getting data": false });
+        return res.status(500).send("Internal server error");
     } else {
-        res.send(result.data);
+        return res.send(result.data);
 
     }
 });
@@ -88,9 +88,9 @@ app.get('/users', async (req, res) => {
 app.get('/plan', async (req, res) => {
     const result = await myRepository.getAllPlansData();
     if (result.status === 500) {
-        res.json({ "Error getting data": false });
+        return res.status(500).send("Internal server error");
     } else {
-        res.send(result.data);
+        return res.send(result.data);
 
     }
 });
@@ -110,14 +110,11 @@ app.post('/contact', async (req, res) => {
             const result = await myRepository.formContact(userData); // Connect to DB
             switch (result.status) {
                 case 200:
-                    res.send(result.status);
-                    break;
+                    return res.status(200).send("OK");
                 case 404:
-                    res.send(result.status);
-                    break;
+                    return res.status(404).send("User not found");
                 case 500:
-                    res.send(result.status);
-                    break;
+                    return res.status(500).send("Internal server error");
             }
         } catch (err) {
             res.status(500).send(`Something went wrong - ${err}`);
@@ -142,7 +139,7 @@ app.post('/signupNewUser', async (req, res) => {
 
             case 404:
                 console.log(result.status);
-                return res.status(400).send("Bad request");
+                return res.status(404).send("User cannot be added");
 
             case 500:
                 console.log(result.status);

@@ -227,7 +227,6 @@ async function udpateUser(dataToUpdate) {
         }
     }
     if (checkFieldsOnUpdate()) {
-        console.log("YES");
     } else {
         try {
             const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
@@ -286,6 +285,7 @@ async function sendForm(event) {
 
 // Join - Us button
 async function signUpUser() {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // PAssword type -> Abc@1234 
     let dateOfBirth = new Date();
     const dateInput = document.querySelector("#birthOfDate").value;
     const tempPassword = document.querySelector("#password").value;
@@ -305,16 +305,20 @@ async function signUpUser() {
     };
     if (tempPassword != confirmPassword) {
         alert('Password are not match');
-    } else {
-        queryToMemeberTable['password'] = document.querySelector("#password").value;
+        return;
+    } else if (!passwordRegex.test(tempPassword)) { // Checking if password is pass regax test
+        alert("Password must be at least 8 characters long and include:\n- At least one uppercase letter\n- At least one lowercase letter\n- At least one number\n- At least one special character (@$!%*?&)");
+        return;
     }
+    else {
+        queryToMemeberTable['password'] = document.querySelector("#password").value;
+        for (const [key, value] of Object.entries(queryToMemeberTable)) {
+            if (!value) {
+                alert("Please fill all fields!");
+                console.log(queryToMemeberTable);
 
-    for (const [key, value] of Object.entries(queryToMemeberTable)) {
-        if (!value) {
-            alert("Please fill all fields!");
-            console.log(queryToMemeberTable);
-
-            return; // If any field is empty - Don't send it!
+                return; // If any field is empty - Don't send it!
+            }
         }
     }
     try {
@@ -329,14 +333,15 @@ async function signUpUser() {
         const data = await response.text(); // Get response as text
         // console.log(data);
 
-        if (data === "Not Found") {
+        if (data === "User cannot be added") {
             console.log("User cannot be insreted");
             return;
         } else if (data === "OK") {
             alert(`Welcome to our team ${queryToMemeberTable.fullName}! Our staff will reach out shortly`);
-            window.location.href = 'http://127.0.0.1:5501/public/thankYou.html'; // Page refresh
+            window.location.href = 'http://127.0.0.1:5501/public/login.html'; // Page refresh
         } else if (data === "Internal server error") {
             alert("Email is alreay in use please use diffrent email!");
+            return;
         }
 
         // document.getElementById('responseMessage').innerText = data; // Show response
@@ -344,11 +349,36 @@ async function signUpUser() {
         console.error('Error:', error);
         // document.getElementById('responseMessage').innerText = 'Error sending message!';
     }
+
 }
 
 
 function signUp() {
     window.location.href = "http://localhost:5500/signup.html";
+}
+
+
+async function login() {
+    const email = document.querySelector("#email").value;
+    const password = document.querySelector("#password").value;
+    try {
+        const response = await fetch(`http://localhost:5500/users`);
+        const data = await response.json();
+        let found = false;
+        for (let i = 0; i < data.length; i++)
+            if (data[i]['email'] === email && data[i]['password'] === password) {
+                console.log("Coockie created!"); // Add cookie to login
+                return;
+            }
+        console.log("Not match");
+
+
+
+
+    } catch (err) {
+        console.log(err);
+    }
+
 }
 
 

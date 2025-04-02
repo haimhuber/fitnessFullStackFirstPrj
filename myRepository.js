@@ -1,50 +1,22 @@
-
 const sql = require('mssql');
-
-const config = {
-    user: 'sa10',
-    password: '1234',
-    server: 'localhost',
-    database: 'FitnessClubDB',
-    options: {
-        encrypt: false, // for azure change to true
-        trustServerCertificate: true // change to false for production
-    }
-};
-
-async function connectionToSqlDB() {
-    try {
-        let pool = await sql.connect(config);
-        console.log('Connected to SQL Server');
-        return pool;
-    } catch (err) {
-        console.error('Database connection failed:', err);
-        throw err;
-    }
-}
-
-module.exports.connectionToSqlDB = connectionToSqlDB;
-
-
+const connectDb = require('./db');
 
 async function updateUser(userData) {
     try {
-        const pool = await connectionToSqlDB(); // Connect to DB
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
 
         // Execute update query for user ID 1
         const result = await pool.request()
+            .input('userId', userData.userId)
             .input('fullName', userData.fullName)
             .input('email', userData.email)
             .input('phoneNumber', userData.phonenumber)
             .input('dateOfBirth', userData.dateOfBirth)
-            .query(`UPDATE Members 
-                    SET fullName = @fullName, 
-                        email = @email, 
-                        phoneNumber = @phoneNumber, 
-                        dateOfBirth = @dateOfBirth
-                        WHERE id = ${userData.userId}`);
+            .execute('spUpdateUser');
 
         // Check if the row was updated
+        console.log(result);
+
         if (result.rowsAffected[0] === 0) {
             return { message: `User ID ${userData.userId} not found`, status: 404 };
         }
@@ -61,7 +33,7 @@ module.exports.updateUser = updateUser;
 async function insertingNewUser(userData) {
 
     try {
-        const pool = await connectionToSqlDB(); // Connect to DB
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
 
         // Execute update query for user ID 1
         const result = await pool.request()
@@ -77,7 +49,7 @@ async function insertingNewUser(userData) {
         }
         return { message: 'User inserted successfully!', status: 200 };
     } catch (err) {
-        //console.error('Error updating user:', err);
+        console.log({ 'Error updating user': result });
         return { message: err.message, status: 500 };
     }
 };
@@ -89,7 +61,7 @@ async function deletingUser(userId) {
     console.log(userId);
 
     try {
-        const pool = await connectionToSqlDB(); // Connect to DB
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
 
         // Execute update query for user ID 1
         const result = await pool.request()
@@ -110,7 +82,7 @@ module.exports.deletingUser = deletingUser;
 // Contact from form
 async function formContact(userData) {
     try {
-        const pool = await connectionToSqlDB(); // Connect to DB
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
         // Execute update query for user ID 1
         const result = await pool.request()
             .input('name', userData.name)
@@ -137,7 +109,7 @@ module.exports.formContact = formContact;
 async function getAllPlansData() {
 
     try {
-        const pool = await connectionToSqlDB(); // Connect to DB
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
         const result = await pool.request().query('SELECT * FROM WorkoutPlans'); // Fetch all records
         console.log({ 'Data imported successfully': 200 });
 
@@ -157,14 +129,14 @@ module.exports.getAllPlansData = getAllPlansData;
 async function getAllUsersData() {
 
     try {
-        const pool = await connectionToSqlDB(); // Connect to DB
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
         const result = await pool.request().query('SELECT * FROM Members'); // Fetch all records
         console.log({ 'Data imported successfully': 200 });
 
         return { data: result.recordsets[0] };
     } catch (err) {
         //next(err);
-        console.error('Error imported successfully!:', err);
+
         return { message: err, status: 500 };
 
     }
@@ -176,7 +148,7 @@ module.exports.getAllUsersData = getAllUsersData;
 // Sing Up new user
 async function signUpNewUser(userData) {
     try {
-        const pool = await connectionToSqlDB(); // Connect to DB
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
 
         // Execute update query for user ID 1
         const result = await pool.request()
@@ -194,6 +166,7 @@ async function signUpNewUser(userData) {
         }
         return { status: 200 };
     } catch (err) {
+        console.log({ 'Error updating user': result });
         return { status: 500 };
     }
 };

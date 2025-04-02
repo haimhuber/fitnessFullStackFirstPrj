@@ -16,7 +16,7 @@ GO
 IF NOT EXISTS (
     SELECT [name]
         FROM sys.databases
-        WHERE [name] = N'FitnessClubDB'
+        WHERE [name] = 'FitnessClubDB'
 )
 CREATE DATABASE FitnessClubDB;
 GO
@@ -31,7 +31,7 @@ GO
 		id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 		fullName varchar(255) NOT NULL,
 		email varchar(255)UNIQUE NOT NULL,
-		userName  varchar(255)NOT NULL,
+		userName  varchar(255)UNIQUE NOT NULL,
 		password   varchar(255) NOT NULL,
 		phoneNumber varchar(15) NOT NULL,
 		dateOfBirth DATE NOT NULL,
@@ -413,20 +413,26 @@ VALUES
 GO
 
 /* Stored Procedure */
-
--- Procedure 1 - Check how many trainers weight above 67
-CREATE OR ALTER PROCEDURE [dbo].[spHowManyTrainersWeightAbove67]
-AS
+-- Procedure 1 - Update user using PATCH
+CREATE OR ALTER PROCEDURE [dbo].[spUpdateUser]
+@userId INT,
+@fullName VARCHAR(255),
+@email VARCHAR(255),
+@phoneNumber VARCHAR(15),
+@dateOfBirth DATE
+AS	
 BEGIN
-    -- Counting the number of trainers where weight > 67
-    SELECT COUNT(*) AS [Trainers that weights above 67]
-    FROM TrainersDetails
-    WHERE weight > 67;
+    UPDATE Members 
+    SET 
+        fullName = @fullName,
+        email = @email,
+        phoneNumber = @phoneNumber,
+        dateOfBirth = @dateOfBirth
+    WHERE id = @userId;
+
 END
 GO
--- הרצת ה-Stored Procedure
-EXEC spHowManyTrainersWeightAbove67
-GO
+
 -- Procedure 2 - Check how many workout plans each member is registered to
 CREATE OR ALTER PROCEDURE [dbo].[spHowManyWorkoutPlansPerMember]
 AS

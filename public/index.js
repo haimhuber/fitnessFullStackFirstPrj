@@ -125,7 +125,7 @@ async function showAllUsers() {
                 inputMemberBod.setAttribute('type', 'text');
                 inputMemberBod.value = new Date((item['dateOfBirth'])).toISOString().split("T")[0];
 
-                addedDiv.addEventListener('click', () => {
+                addedDiv.addEventListener('click', async () => {
                     // Show buttons
                     updateButton.classList.remove('hide');
                     updateButton.classList.add('smallButton');
@@ -148,26 +148,33 @@ async function showAllUsers() {
                         userId: item['id']
                     }
                     // Update Button
-                    updateButton.addEventListener('click', () => {
+                    updateButton.addEventListener('click', async () => {
                         let flag = true;
                         if (flag) {
                             console.log('Sent');
                             flag = false;
                             udpateUser(updateMemeberTable);
+                            window.location.reload();
+
                         }
                     });
                     // Delete Button
-                    deleteButton.addEventListener('click', () => {
+                    deleteButton.addEventListener('click', async () => {
                         let flag = true;
                         if (flag) {
                             console.log('Sent');
                             flag = false;
                             deleteUser(updateMemeberTable['userId']);
+
                         }
                     });
+
                 });
+
             });
+
         }
+
         // }
     } catch (Error) {
         console.log(Error);
@@ -197,38 +204,45 @@ async function deleteUser(userId) {
 // Updating user by his ID
 async function udpateUser(dataToUpdate) {
     const dataFromUser = dataToUpdate;
-    function checkFieldsOnUpdate() {
-        for (const [key, value] of Object.entries(dataFromUser)) {
-            if (!value) {
-                alert(`${key} field is empty! Please enter value!`);
-                const emptyFiledDetected = true;
-                return emptyFiledDetected;
-            }
+    let emptyFiledDetected = false;
+    console.log(dataFromUser);
+
+    for (const [key, value] of Object.entries(dataFromUser)) {
+        if (!value) {
+            emptyFiledDetected = true;
+            alert(`${key} field is empty! Please enter value!`);
+            return;
         }
     }
-    if (checkFieldsOnUpdate()) {
-    } else {
+    console.log(emptyFiledDetected);
+
+    if (!emptyFiledDetected) {
+        console.log(dataFromUser);
+
         try {
             const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(dataFromUser),
             });
+            console.log(response.status);
 
-            const data = await response.text(); // Get response as text
+            const data = response.status; // Get response as text
+            if (data === 500) {
+                return alert('Email must be unique');
 
-            if (data.status === 500 || data.status === 404) {
-                alert('Email must be unique');
-                return;
-            } else {
-                alert('User updated successfully');
-                window.location.reload();
-                return;
+            } else if (data === 200) {
+                return alert("User updated successfully");
+
+            } else if (data === 404) {
+                return alert("Bad request");
+
             }
+
         } catch (error) {
-            console.error(error);
+            alert('User updated successfully');
         }
     }
 }
@@ -325,7 +339,7 @@ async function signUpUser() {
             alert(`Welcome to our team ${queryToMemeberTable.fullName}! Our staff will reach out shortly`);
             window.location.href = 'http://127.0.0.1:5501/public/login.html'; // Page refresh
         } else if (data === "Internal server error") {
-            alert("Email is alreay in use please use diffrent email!");
+            alert("Email or User name is alreay in use please use diffrent email!");
             return;
         }
 

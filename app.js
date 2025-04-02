@@ -10,6 +10,7 @@ const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, 'public')));
 const cors = require("cors");
 const cookieparser = require('cookie-parser');
+const { log } = require('console');
 app.use(cookieparser('secret'));
 
 const port = process.env.PORT || 5500;
@@ -43,7 +44,7 @@ app.use('/user-managment', (req, res, next) => {
         return res.redirect('http://localhost:5500/login.html');
     } else {
         res.cookie('loginCookie', 'singedCoockie', cookieConfig);
-        console.log({ "Cookie updated": Date.now() });
+        // console.log({ "Cookie updated": Date.now() });
     }
 
     next();
@@ -162,7 +163,6 @@ app.post('/signupNewUser', async (req, res) => {
                 return res.status(404).send("User cannot be added");
 
             case 500:
-                console.log(result.status);
                 return res.status(500).send("Internal server error");
 
         }
@@ -175,24 +175,25 @@ app.post('/signupNewUser', async (req, res) => {
 
 
 // <---------------------------------Put Mtehod------------------------------------------------------>//
-app.put('/update-user/:userId', async (req, res) => {
+app.patch('/update-user/:userId', async (req, res) => {
     const userData = { fullName, email, phonenumber, dateOfBirth } = req.body;
     userData['userId'] = req.params.userId;
 
     try {
         const result = await myRepository.updateUser(userData); // Connect to DB
+
         switch (result.status) {
             case 200:
-                res.send(result.status);
+                res.status(200).send("OK");
                 break;
             case 404:
-                res.send(result.status);
+                res.status(404).send("Bad request");
                 break;
             case 500:
-                res.send(result.status);
+                res.status(500).send("Something went wrong");
                 break;
             default:
-                break;
+                log('default');
         }
     } catch (err) {
         res.status(500).send(`Something went wrong - ${err}`);

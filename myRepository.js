@@ -136,7 +136,6 @@ async function getAllUsersData() {
         return { data: result.recordsets[0] };
     } catch (err) {
         //next(err);
-
         return { message: err, status: 500 };
 
     }

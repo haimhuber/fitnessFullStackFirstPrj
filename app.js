@@ -26,8 +26,8 @@ const cookieConfig = {
 };
 
 // Middleware for login tests
-app.use('/class', (req, res, next) => {
-    if (!req.signedCookies.loginCookie) {
+app.use((req, res, next) => {
+    if (!req.signedCookies.loginCookie && req.url != '/login') {
         console.log("You didn't made any action in the last 2 min. Please log again");
         return res.redirect('http://localhost:5500/login.html');
     } else {
@@ -35,18 +35,6 @@ app.use('/class', (req, res, next) => {
         console.log({ "Cookie updated": Date.now() });
 
     }
-
-    next();
-});
-app.use('/user-managment', (req, res, next) => {
-    if (!req.signedCookies.loginCookie) {
-        console.log("You didn't made any action in the last 2 min. Please log again");
-        return res.redirect('http://localhost:5500/login.html');
-    } else {
-        res.cookie('loginCookie', 'singedCoockie', cookieConfig);
-        // console.log({ "Cookie updated": Date.now() });
-    }
-
     next();
 });
 
@@ -95,12 +83,11 @@ app.get('/thank-you', (req, res) => {
 // Dispalys all users names
 app.get('/users', async (req, res) => {
     const result = await myRepository.getAllUsersData();
-    // console.log(result.data);
 
     if (result.status === 500) {
         return res.status(500).send("Internal server error");
     } else {
-        return res.send(result.data);
+        return res.json(result.data);
 
     }
 });

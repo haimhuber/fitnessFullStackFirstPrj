@@ -303,6 +303,12 @@ async function signUpUser() {
         dateOfBirth: dateOfBirth,
         password: ""
     };
+    for (const [key, value] of Object.entries(queryToMemeberTable)) {
+        if (!value) {
+            alert("All fields are required!");
+            return;
+        }
+    }
     if (tempPassword != confirmPassword) {
         alert('Password are not match');
         return;
@@ -365,6 +371,7 @@ async function login() {
         const data = await response.json();
         let found = false;
         for (let i = 0; i < data.length; i++) {
+
             if (data[i]['email'] === email && data[i]['password'] === password) {
                 createCookie = true;
                 userIndex = i;
@@ -372,21 +379,24 @@ async function login() {
             }
         }
         if (createCookie) {
+
+
             const cookieResponse = await fetch('http://localhost:5500/create-my-coockie');
             const cookieData = await cookieResponse.json();
             console.log(cookieData);
-            window.location.href = "http://localhost:5500/index.html";
+            window.location.href = "http://localhost:5500/homePage.html";
             return;
 
         } else {
+            console.log({ 'email': email, 'password': password });
+
             alert("Email or password are wrong")
             console.log("Not match");
             return;
         }
 
-
     } catch (err) {
-        console.log({ "Massage error": err });
+        console.log(err);
     }
 
 }

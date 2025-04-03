@@ -374,31 +374,33 @@ async function login() {
 
             if (data[i]['email'] === email && data[i]['password'] === password) {
                 createCookie = true;
+                console.log(createCookie);
                 userIndex = i;
                 break;
             }
         }
         if (createCookie) {
-
-
-            const cookieResponse = await fetch('http://localhost:5500/create-my-coockie');
+            const cookieResponse = await fetch('http://localhost:5500/create-my-cookie');
             const cookieData = await cookieResponse.json();
-            console.log(cookieData);
+            console.log(cookieResponse);
             window.location.href = "http://localhost:5500/homePage.html";
             return;
 
         } else {
             console.log({ 'email': email, 'password': password });
-
             alert("Email or password are wrong")
             console.log("Not match");
             return;
         }
 
     } catch (err) {
-        console.log(err);
+        return console.log(err);
     }
 
 }
+
+// window.addEventListener("unload", () => {
+//     fetch('/logout'); // Send logout request
+// });
 
 

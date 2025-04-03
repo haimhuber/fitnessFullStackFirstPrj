@@ -27,19 +27,27 @@ const cookieConfig = {
 
 // Middleware for login tests
 app.use((req, res, next) => {
-    if (!req.signedCookies.loginCookie && req.url != '/login') {
+    if (!req.signedCookies.loginCookie && (req.url !== '/login' && req.url !== '/create-my-cookie')) {
         console.log("You didn't made any action in the last 2 min. Please log again");
-        return res.redirect('http://localhost:5500/login.html');
-    } else {
-        res.cookie('loginCookie', 'singedCoockie', cookieConfig);
+        return res.redirect('/login');
+    } else if (req.signedCookies.loginCookie) {
         console.log({ "Cookie updated": Date.now() });
+        return res.cookie('loginCookie', 'signedCookie', cookieConfig);
 
     }
     next();
 });
 
+app.get('/logout', (req, res, next) => {
+    console.log('Coockie deleted');
+
+    res.clearCookie('loginCookie');
+    next();
+});
+
+
 // Login coockie creator
-app.get('/create-my-coockie', (req, res) => {
+app.get('/create-my-cookie', (req, res) => {
     res.cookie('loginCookie', 'singedCoockie', cookieConfig);
     res.send({ "You created signed cookie": req.signedCookies.loginCookie });
 });
@@ -59,6 +67,10 @@ app.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'about.html'));
 
     // Class Page
+});
+app.get('/homepage', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'homePage.html'));
+
 });
 app.get('/class', async (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'class.html'));
@@ -201,5 +213,5 @@ app.delete('/deleteUser/:paramId?', async (req, res) => {
 
 // <---------------------------------Listner------------------------------------------------------>//
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+    console.log(`Server listening at http://localhost:${port}/homepage`);
 });

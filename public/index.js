@@ -1,21 +1,24 @@
-function highlight() {
-    let navItems = document.getElementsByClassName('navigator');
-    Array.from(navItems).forEach(item => {
-        item.addEventListener('click', function () {
-            console.log(navItems);
-            // Remove highlight from all items first
-            Array.from(navItems).forEach(nav => nav.classList.remove('highlight'));
+userActions = require('./userSingup_Login');
 
-            // Add highlight only to the clicked item
-            this.classList.add('highlight');
-            const myDiv = document.querySelector("#class-from-db");
-            myDiv.textContent = "";
-        });
-    });
 
-}
-// Ensure function runs after the DOM has loaded
-// document.addEventListener('DOMContentLoaded', highlight);
+// function highlight() {
+//     let navItems = document.getElementsByClassName('navigator');
+//     Array.from(navItems).forEach(item => {
+//         item.addEventListener('click', function () {
+//             console.log(navItems);
+//             // Remove highlight from all items first
+//             Array.from(navItems).forEach(nav => nav.classList.remove('highlight'));
+
+//             // Add highlight only to the clicked item
+//             this.classList.add('highlight');
+//             const myDiv = document.querySelector("#class-from-db");
+//             myDiv.textContent = "";
+//         });
+//     });
+
+// }
+// // Ensure function runs after the DOM has loaded
+// // document.addEventListener('DOMContentLoaded', highlight);
 
 // <------------------------------------------------------------------>
 async function showPlanDetalis() {
@@ -24,6 +27,7 @@ async function showPlanDetalis() {
         const data = await response.json();
         console.log(data["Error getting data"] === false);
         const myDiv = document.querySelector("#class-from-db");
+        myDiv.textContent = "";
         if (data["Error getting data"] === false) {
             myDiv.textContent = "Server Error! Please check DB connection";
             return;
@@ -62,11 +66,7 @@ async function showAllUsers() {
         const data = await response.json();
         console.log(data);
         const myDiv = document.querySelector("#class-from-db");
-        // if (data["Error getting data"] === false) {
-        //     myDiv.textContent = "Server Error! Please check DB connection";
-        // }
-        // else {
-        // const userActionDiv = document.querySelector("#userActions");
+        myDiv.textContent = "";
         if (Array.isArray(data) && data.length > 0) {
             data.forEach(item => {
                 let flag = false;
@@ -303,12 +303,7 @@ async function signUpUser() {
         dateOfBirth: dateOfBirth,
         password: ""
     };
-    for (const [key, value] of Object.entries(queryToMemeberTable)) {
-        if (!value) {
-            alert("All fields are required!");
-            return;
-        }
-    }
+
     if (tempPassword != confirmPassword) {
         alert('Password are not match');
         return;
@@ -358,46 +353,6 @@ async function signUpUser() {
 }
 
 
-function signUp() {
-    window.location.href = "http://localhost:5500/signup.html";
-}
-async function login() {
-    const email = document.querySelector("#email").value;
-    const password = document.querySelector("#password").value;
-    let createCookie = false;
-    let userIndex = 0;
-    try {
-        const response = await fetch(`http://localhost:5500/users`);
-        const data = await response.json();
-        let found = false;
-        for (let i = 0; i < data.length; i++) {
-
-            if (data[i]['email'] === email && data[i]['password'] === password) {
-                createCookie = true;
-                console.log(createCookie);
-                userIndex = i;
-                break;
-            }
-        }
-        if (createCookie) {
-            const cookieResponse = await fetch('http://localhost:5500/createmycookie');
-            const cookieData = await cookieResponse.json();
-            console.log(cookieResponse);
-            window.location.href = "http://localhost:5500/homePage.html";
-            return;
-
-        } else {
-            console.log({ 'email': email, 'password': password });
-            alert("Email or password are wrong")
-            console.log("Not match");
-            return;
-        }
-
-    } catch (err) {
-        return console.log(err);
-    }
-
-}
 
 // window.addEventListener("unload", () => {
 //     fetch('/logout'); // Send logout request

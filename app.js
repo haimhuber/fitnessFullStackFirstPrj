@@ -12,6 +12,10 @@ const cors = require("cors");
 const cookieparser = require('cookie-parser');
 const { log } = require('console');
 app.use(cookieparser('secret'));
+
+const bcrypt = require('bcrypt');
+const { hash } = require('crypto');
+const saltRounds = 10;
 cookieConfig = {
     maxAge: Number(process.env.MAX_AGE) || 120000,
     httpOnly: true,
@@ -31,7 +35,7 @@ app.use((req, res, next) => {
         res.cookie('isActive', 'secureValue', cookieConfig);
     }
     // If no loginCookie and the user is not on the login or create-my-cookie route
-    if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/users') {
+    if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/users' && req.url !== '/signupNewUser') {
         console.log("You didn't make any action in the last 2 min. Please log again");
         return res.redirect('/login');
     }
@@ -155,6 +159,10 @@ app.post('/signupNewUser', async (req, res) => {
     const userData = { fullName, email, userName, password, phoneNumber, dateOfBirth };
 
     try {
+        const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+        userData.password = hashedPassword;
+        console.log(hashedPassword);
+
         const result = await myRepository.signUpNewUser(userData); // Connect to DB
         switch (result.status) {
             case 200:
@@ -170,10 +178,33 @@ app.post('/signupNewUser', async (req, res) => {
         }
     } catch (err) {
         return res.send(err);
-        ;
     }
 });
 
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const userData = { email, password };
+    try {
+        const result = await myRepository.isUserExist(userData); // Connect to DB
+        // console.log(result.result);
+        switch (result.status) {
+            case 200:
+                return res.status(200).json(result);
+
+            case 404:
+                return res.status(404).json({ error: "User not found" });
+
+            case 500:
+                return res.status(500).json({ error: "Internal server error" });
+
+            default:
+                return res.status(400).json({ error: "Unexpected response from server" });
+        }
+    } catch (err) {
+        return res.send(err);
+    }
+});
 
 
 // <---------------------------------Put Mtehod------------------------------------------------------>//

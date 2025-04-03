@@ -3,5 +3,5 @@ node_modules/
 # Environment variables
 .env
 # SQL
-*.sql
+FitnessClubDB.sql
 

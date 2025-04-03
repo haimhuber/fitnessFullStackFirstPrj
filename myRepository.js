@@ -29,6 +29,31 @@ async function updateUser(userData) {
 module.exports.updateUser = updateUser;
 
 
+// Check is user exist
+async function isUserExist(userData) {
+    try {
+        const pool = await connectDb.connectionToSqlDB(); // Connect to DB
+
+        // Execute update query for user ID 1
+        const result = await pool.request()
+            .input('email', userData.email)
+            .execute('spIsUserExist');
+
+        // Check if the row was updated
+        if (!result.recordset || result.recordset.length === 0) {
+            return { result: `User ${userData.email} not found`, status: 404 };
+        }
+
+        return { result: result.recordset[0], status: 200 };
+
+    } catch (err) {
+        console.error("Database Error:", err); // Log actual error for debugging
+        return { result: "Internal Server Error", status: 500 };
+    }
+
+};
+module.exports.isUserExist = isUserExist;
+
 // Inserting users Data
 async function insertingNewUser(userData) {
 

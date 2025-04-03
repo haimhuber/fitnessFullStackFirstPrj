@@ -433,22 +433,17 @@ BEGIN
 END
 GO
 
--- Procedure 2 - Check how many workout plans each member is registered to
-CREATE OR ALTER PROCEDURE [dbo].[spHowManyWorkoutPlansPerMember]
-AS
+-- Procedure 2 - Check is user email exist
+CREATE OR ALTER PROCEDURE [dbo].[spIsUserExist]
+@email VARCHAR(255)
+AS	
 BEGIN
-    -- Counting how many workout plans each member is registered to
-    SELECT memberId, COUNT(*) AS [PlansRegistered]
-    FROM RegistrationToWorkoutPlans
-    GROUP BY memberId
-    ORDER BY memberId;
+    SELECT email, password
+    FROM Members 
+    WHERE email = @email;
+
 END
 GO
-
--- הרצת ה-Stored Procedure
-EXEC spHowManyWorkoutPlansPerMemeber
-GO
-
 -- Procedure 3 - Check Which member pays the most
 CREATE OR ALTER PROCEDURE [dbo].[spWhichMemberPaysTheMost]
 AS

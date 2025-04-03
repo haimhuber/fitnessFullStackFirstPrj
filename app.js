@@ -12,45 +12,48 @@ const cors = require("cors");
 const cookieparser = require('cookie-parser');
 const { log } = require('console');
 app.use(cookieparser('secret'));
+cookieConfig = {
+    maxAge: Number(process.env.MAX_AGE) || 120000,
+    httpOnly: true,
+    signed: true// if we use secret with cookieParser
+};
 
 const port = process.env.PORT || 5500;
 app.use(cors());
 
 
-const cookieConfig = {
-    maxAge: (2 * 60) * 1000,
-    signed: true,// if we use secret with cookieParser
-    // for which routes should the browser send the cookie
-    // path: '/',
-    // SameSite: 'Lax'
-};
 
 // Middleware for login tests
 app.use((req, res, next) => {
-    if (!req.signedCookies.loginCookie && (req.url !== '/login' && req.url !== '/create-my-cookie')) {
-        console.log("You didn't made any action in the last 2 min. Please log again");
-        return res.redirect('/login');
-    } else if (req.signedCookies.loginCookie) {
+    // If loginCookie exists, refresh the session (e.g., update the cookie)
+    if (req.signedCookies.isActive) {
         console.log({ "Cookie updated": Date.now() });
-        return res.cookie('loginCookie', 'signedCookie', cookieConfig);
-
+        res.cookie('isActive', 'secureValue', cookieConfig);
     }
-    next();
+    // If no loginCookie and the user is not on the login or create-my-cookie route
+    if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/users') {
+        console.log("You didn't make any action in the last 2 min. Please log again");
+        return res.redirect('/login');
+    }
+    next();  // Continue to the next middleware
 });
 
-app.get('/logout', (req, res, next) => {
-    console.log('Coockie deleted');
 
-    res.clearCookie('loginCookie');
-    next();
+app.get('/logout', (req, res) => {
+    console.log('Coockie deleted');
+    res.clearCookie('isActive');
+    return res.redirect('/login');
 });
 
 
 // Login coockie creator
-app.get('/create-my-cookie', (req, res) => {
-    res.cookie('loginCookie', 'singedCoockie', cookieConfig);
-    res.send({ "You created signed cookie": req.signedCookies.loginCookie });
+app.get('/createmycookie', (req, res) => {
+    console.log("you creted cookie");
+
+    res.cookie('isActive', 'secureValue', cookieConfig);
+    res.send({ "You created signed cookie": true });
 });
+
 
 // <-------------------------Pages-------------------------------------------->
 // login Page
@@ -213,5 +216,5 @@ app.delete('/deleteUser/:paramId?', async (req, res) => {
 
 // <---------------------------------Listner------------------------------------------------------>//
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}/homepage`);
+    console.log(`Server listening at http://localhost:${port}`);
 });

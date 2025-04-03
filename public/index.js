@@ -15,7 +15,7 @@ function highlight() {
 
 }
 // Ensure function runs after the DOM has loaded
-document.addEventListener('DOMContentLoaded', highlight);
+// document.addEventListener('DOMContentLoaded', highlight);
 
 // <------------------------------------------------------------------>
 async function showPlanDetalis() {
@@ -380,7 +380,7 @@ async function login() {
             }
         }
         if (createCookie) {
-            const cookieResponse = await fetch('http://localhost:5500/create-my-cookie');
+            const cookieResponse = await fetch('http://localhost:5500/createmycookie');
             const cookieData = await cookieResponse.json();
             console.log(cookieResponse);
             window.location.href = "http://localhost:5500/homePage.html";

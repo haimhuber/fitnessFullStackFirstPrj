@@ -15,6 +15,7 @@ app.use(cookieparser('secret'));
 
 const bcrypt = require('bcrypt');
 const { hash } = require('crypto');
+const { url } = require('inspector');
 const saltRounds = 10;
 cookieConfig = {
     maxAge: Number(process.env.MAX_AGE) || 120000,
@@ -29,35 +30,27 @@ app.use(cors());
 
 // Middleware for login tests
 app.use((req, res, next) => {
+    console.log(req.url);
+
     // If loginCookie exists, refresh the session (e.g., update the cookie)
     if (req.signedCookies.isActive) {
         console.log({ "Cookie updated": Date.now() });
         res.cookie('isActive', 'secureValue', cookieConfig);
     }
     // If no loginCookie and the user is not on the login or create-my-cookie route
-    if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/users' && req.url !== '/signupNewUser') {
+    if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/signupNewUser') {
         console.log("You didn't make any action in the last 2 min. Please log again");
         return res.redirect('/login');
     }
     next();  // Continue to the next middleware
 });
 
-
+// Delete cookie
 app.get('/logout', (req, res) => {
     console.log('Coockie deleted');
     res.clearCookie('isActive');
     return res.redirect('/login');
 });
-
-
-// Login coockie creator
-app.get('/createmycookie', (req, res) => {
-    console.log("you creted cookie");
-
-    res.cookie('isActive', 'secureValue', cookieConfig);
-    res.send({ "You created signed cookie": true });
-});
-
 
 // <-------------------------Pages-------------------------------------------->
 // login Page
@@ -123,6 +116,15 @@ app.get('/plan', async (req, res) => {
 });
 
 // <---------------------------------Post Mtehod------------------------------------------------------>//
+
+// Login coockie creator
+app.post('/createmycookie', (req, res) => {
+    console.log("you creted cookie");
+    res.cookie('isActive', 'secureValue', cookieConfig);
+    res.send({ "You created signed cookie": true });
+});
+
+
 // POST API to Insert Contact Form Data
 app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body; // Get data from request body
@@ -150,7 +152,6 @@ app.post('/contact', async (req, res) => {
 
 });
 
-
 // <--------------------------------------------------------------------------------------->//
 // Adding new user login details
 app.post('/signupNewUser', async (req, res) => {
@@ -161,11 +162,12 @@ app.post('/signupNewUser', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
         userData.password = hashedPassword;
-        console.log(hashedPassword);
 
-        const result = await myRepository.signUpNewUser(userData); // Connect to DB
+        const result = await myRepository.insertingNewUser(userData); // Connect to DB
+
         switch (result.status) {
             case 200:
+                console.log(result);
                 return res.status(200).send("OK");
 
             case 404:
@@ -174,38 +176,39 @@ app.post('/signupNewUser', async (req, res) => {
 
             case 500:
                 return res.status(500).send("Internal server error");
-
         }
     } catch (err) {
         return res.send(err);
     }
 });
-
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const userData = { email, password };
     try {
         const result = await myRepository.isUserExist(userData); // Connect to DB
-        // console.log(result.result);
+
         switch (result.status) {
             case 200:
-                return res.status(200).json(result);
-
+                const enctypedPassword = await bcrypt.compare(userData.password, result.result.password);
+                console.log(enctypedPassword);
+                if (enctypedPassword) {
+                    return res.status(200).json({ status: 200, result: true });
+                }
+                return res.status(200).json({ status: 200, result: false });
             case 404:
-                return res.status(404).json({ error: "User not found" });
+                return res.status(404).json({ status: 404, error: "User not found" });
 
             case 500:
-                return res.status(500).json({ error: "Internal server error" });
+                return res.status(500).json({ status: 500, error: "Internal server error" });
 
             default:
-                return res.status(400).json({ error: "Unexpected response from server" });
+                return res.status(400).json({ status: 400, error: "Unexpected response from server" });
         }
     } catch (err) {
         return res.send(err);
     }
 });
-
 
 // <---------------------------------Put Mtehod------------------------------------------------------>//
 app.patch('/update-user/:userId', async (req, res) => {
@@ -232,7 +235,6 @@ app.patch('/update-user/:userId', async (req, res) => {
         res.status(500).send(`Something went wrong - ${err}`);
     }
 });
-
 
 // <---------------------------------Delete Mtehod------------------------------------------------------>//
 // Delete Method

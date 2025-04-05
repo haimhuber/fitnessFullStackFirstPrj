@@ -1,25 +1,4 @@
-userActions = require('./userSingup_Login');
-
-
-// function highlight() {
-//     let navItems = document.getElementsByClassName('navigator');
-//     Array.from(navItems).forEach(item => {
-//         item.addEventListener('click', function () {
-//             console.log(navItems);
-//             // Remove highlight from all items first
-//             Array.from(navItems).forEach(nav => nav.classList.remove('highlight'));
-
-//             // Add highlight only to the clicked item
-//             this.classList.add('highlight');
-//             const myDiv = document.querySelector("#class-from-db");
-//             myDiv.textContent = "";
-//         });
-//     });
-
-// }
-// // Ensure function runs after the DOM has loaded
-// // document.addEventListener('DOMContentLoaded', highlight);
-
+// userActions = require('./userSingup_Login');
 // <------------------------------------------------------------------>
 async function showPlanDetalis() {
     try {
@@ -168,13 +147,9 @@ async function showAllUsers() {
 
                         }
                     });
-
                 });
-
             });
-
         }
-
         // }
     } catch (Error) {
         console.log(Error);
@@ -238,9 +213,7 @@ async function udpateUser(dataToUpdate) {
 
             } else if (data === 404) {
                 return alert("Bad request");
-
             }
-
         } catch (error) {
             alert('User updated successfully');
         }
@@ -338,7 +311,7 @@ async function signUpUser() {
             return;
         } else if (data === "OK") {
             alert(`Welcome to our team ${queryToMemeberTable.fullName}! Our staff will reach out shortly`);
-            window.location.href = 'http://127.0.0.1:5501/public/login.html'; // Page refresh
+            window.location.href = 'http://127.0.0.1:5500/public/login.html'; // Page refresh
         } else if (data === "Internal server error") {
             alert("Email or User name is alreay in use please use diffrent email!");
             return;
@@ -352,10 +325,71 @@ async function signUpUser() {
 
 }
 
+function signUp() {
+    window.location.href = "http://localhost:5500/signup.html";
+}
+async function login() {
+    const dataFromUser = {
+        email: document.querySelector("#email").value,
+        password: document.querySelector("#password").value
+    }
+    try {
+        const response = await fetch(`http://localhost:5500/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataFromUser),
+        });
 
+        const data = await response.json(); // Get response as text
+        console.log(dataFromUser);
 
-// window.addEventListener("unload", () => {
-//     fetch('/logout'); // Send logout request
-// });
+        if (data.status === 500 || data.error === 'Internal server error') {
+            return alert('Internal Server Error');
+
+        } else if (data.status === 404 || data.error === 'User not found') {
+            return alert(`Email: ${dataFromUser.email} not found`);
+
+        } else if (data.status === 200 && data.result) {
+            try {
+                const response = await fetch(`http://localhost:5500/createmycookie`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dataFromUser),
+                });
+                const data = await response.text(); // Get response as text
+                console.log(data);
+                window.location.href = "http://localhost:5500/homePage.html";
+                return;
+            } catch (err) {
+                return err;
+            }
+        }
+        else {
+            return alert("Email or Password are wrong");
+        }
+
+    } catch (err) {
+        return console.log(err);
+    }
+
+}
+// Detecet if back - farward has made - If did - Coockie deleted
+window.addEventListener('pageshow', async (event) => {
+    const targetPage = '/homePage.html'; // If user retured to homepage after logged in
+
+    if (window.location.pathname.endsWith(targetPage)) {
+        if (event.persisted) {
+            console.log('Returned via back button (from bfcache) to homePage.html');
+            await fetch(`http://localhost:5500/logout`);
+        } else {
+            console.log('Normal load of homePage.html');
+        }
+    }
+});
+
 
 

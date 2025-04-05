@@ -17,7 +17,7 @@ async function login() {
         });
 
         const data = await response.json(); // Get response as text
-        console.log(data.error);
+        console.log(dataFromUser);
 
         if (data.status === 500 || data.error === 'Internal server error') {
             return alert('Internal Server Error');
@@ -25,18 +25,25 @@ async function login() {
         } else if (data.status === 404 || data.error === 'User not found') {
             return alert(`Email: ${dataFromUser.email} not found`);
 
-        } else if (data.status === 200) {
-            if (data.result['email'] === dataFromUser['email'] && data.result['password'] === dataFromUser['password']) {
-                const cookieResponse = await fetch('http://localhost:5500/createmycookie');
-                const cookieData = await cookieResponse.json();
-                console.log(cookieData);
+        } else if (data.status === 200 && data.result) {
+            try {
+                const response = await fetch(`http://localhost:5500/createmycookie`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dataFromUser),
+                });
+                const data = await response.text(); // Get response as text
+                console.log(data);
                 window.location.href = "http://localhost:5500/homePage.html";
                 return;
-
-            } else {
-                console.log(data.result['email'], data.result['password']);
-                return alert("Email or Password are wrong");
+            } catch (err) {
+                return err;
             }
+        }
+        else {
+            return alert("Email or Password are wrong");
         }
 
     } catch (err) {
@@ -44,3 +51,12 @@ async function login() {
     }
 
 }
+// Detecet if back - farward has made - If did - Coockie deleted
+window.addEventListener('pageshow', async (event) => {
+    if (event.persisted) {
+        console.log('Returned via back button (from bfcache)');
+        await fetch(`http://localhost:5500/logout`);
+    } else {
+        console.log('Normal page load');
+    }
+});

@@ -422,13 +422,8 @@ CREATE OR ALTER PROCEDURE [dbo].[spUpdateUser]
 @dateOfBirth DATE
 AS	
 BEGIN
-    UPDATE Members 
-    SET 
-        fullName = @fullName,
-        email = @email,
-        phoneNumber = @phoneNumber,
-        dateOfBirth = @dateOfBirth
-    WHERE id = @userId;
+   INSERT INTO Members(fullName, userName, email, phoneNumber, dateOfBirth, password) 
+		values(@fullName, @userName, @email, @phoneNumber, @dateOfBirth, @password)
 
 END
 GO
@@ -438,28 +433,24 @@ CREATE OR ALTER PROCEDURE [dbo].[spIsUserExist]
 @email VARCHAR(255)
 AS	
 BEGIN
-    SELECT email, password
+    SELECT id, email, password
     FROM Members 
     WHERE email = @email;
 
 END
 GO
--- Procedure 3 - Check Which member pays the most
-CREATE OR ALTER PROCEDURE [dbo].[spWhichMemberPaysTheMost]
-AS
+-- Procedure 3 - Insert new user
+CREATE OR ALTER PROCEDURE [dbo].[spInsertNewUser]
+@fullName VARCHAR(255),
+@userName VARCHAR(255),
+@email VARCHAR(255),
+@phoneNumber VARCHAR(15),
+@dateOfBirth DATE,
+@password VARCHAR(255)
+AS	
 BEGIN
-
-    SELECT memberId, SUM(WorkoutPlans.price) AS TotalAmountPaid
-    FROM RegistrationToWorkoutPlans
-    JOIN WorkoutPlans ON RegistrationToWorkoutPlans.planId = WorkoutPlans.id
-    GROUP BY memberId
-    ORDER BY TotalAmountPaid DESC;  -- Order by the total amount paid (highest first)
+    INSERT INTO Members(fullName, userName, email, phoneNumber, dateOfBirth, password) values(@fullName, @userName, @email, @phoneNumber, @dateOfBirth, @password)
 END
-GO
-
-
--- הרצת ה-Stored Procedure
-EXEC spWhichMemberPaysTheMost
 GO
  
 

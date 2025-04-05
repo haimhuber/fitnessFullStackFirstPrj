@@ -47,7 +47,8 @@ async function isUserExist(userData) {
         return { result: result.recordset[0], status: 200 };
 
     } catch (err) {
-        console.error("Database Error:", err); // Log actual error for debugging
+        console.console.log("Database Error:", err);
+        // Log actual error for debugging
         return { result: "Internal Server Error", status: 500 };
     }
 
@@ -63,10 +64,12 @@ async function insertingNewUser(userData) {
         // Execute update query for user ID 1
         const result = await pool.request()
             .input('fullName', userData.fullName)
+            .input('userName', userData.userName)
             .input('email', userData.email)
             .input('phoneNumber', userData.phoneNumber)
             .input('dateOfBirth', userData.dateOfBirth)
-            .query(`INSERT INTO Members (fullName, email, phonenumber, dateOfBirth) VALUES (@fullName, @email, @phonenumber, @dateOfBirth)`);
+            .input('password', userData.password)
+            .execute('spInsertNewUser');
 
         // Check if the row was updated
         if (result.rowsAffected[0] === 0) {
@@ -183,11 +186,14 @@ async function signUpNewUser(userData) {
             .input('phoneNumber', userData.phoneNumber)
             .input('dateOfBirth', userData.dateOfBirth)
             .query(`INSERT INTO Members (fullName, email, userName, password, phoneNumber, dateOfBirth) VALUES (@fullName, @email, @userName, @password, @phoneNumber, @dateOfBirth)`);
+        console.log(result);
+
 
         // Check if the row was updated
         if (result.rowsAffected[0] === 0) {
             return { status: 400 };
         }
+        console.log(result);
         return { status: 200 };
     } catch (err) {
         console.log({ 'Error updating user': result });

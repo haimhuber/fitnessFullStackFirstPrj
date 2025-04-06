@@ -1,4 +1,5 @@
-// userActions = require('./userSingup_Login');
+// Global vars 
+
 // <------------------------------------------------------------------>
 async function showPlanDetalis() {
     try {
@@ -343,15 +344,14 @@ async function login() {
         });
 
         const data = await response.json(); // Get response as text
-        console.log(dataFromUser);
+        console.log(data);
 
         if (data.status === 500 || data.error === 'Internal server error') {
             return alert('Internal Server Error');
 
         } else if (data.status === 404 || data.error === 'User not found') {
             return alert(`Email: ${dataFromUser.email} not found`);
-
-        } else if (data.status === 200 && data.result) {
+        } else if (data.status === 200 && data.response) {
             try {
                 const response = await fetch(`http://localhost:5500/createmycookie`, {
                     method: 'POST',
@@ -377,18 +377,41 @@ async function login() {
     }
 
 }
-// Detecet if back - farward has made - If did - Coockie deleted
+
+
+// // Detecet if back - farward has made - If did - Coockie deleted
 window.addEventListener('pageshow', async (event) => {
-    const targetPage = '/homePage.html'; // If user retured to homepage after logged in
+    const targetPage = '/login.html'; // Page to watch
 
     if (window.location.pathname.endsWith(targetPage)) {
+        console.log("Cookie1111");
         if (event.persisted) {
             console.log('Returned via back button (from bfcache) to homePage.html');
-            await fetch(`http://localhost:5500/logout`);
+
+            try {
+                const response = await fetch('http://localhost:5500/logout');
+                if (response.ok) {
+
+
+                    // Clear user info in frontend (if globally declared)
+                    userIdSignedIn = 0;
+                    userNameSignedIn = "";
+                } else {
+                    console.warn('Logout failed with status:', response.status);
+                }
+            } catch (error) {
+                console.error('Error during logout on pageshow:', error);
+            }
+
         } else {
             console.log('Normal load of homePage.html');
         }
     }
+});
+
+// Detecet if window closed - very important!
+window.addEventListener('unload', async function () {
+    const response = await fetch(`http://localhost:5500/logout`);
 });
 
 

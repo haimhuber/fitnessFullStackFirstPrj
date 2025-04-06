@@ -65,6 +65,18 @@
     </div>
     <footer>&copy; 2025 Fitness Club. All Rights Reserved.</footer>
     <script src="index.js"></script>
+    <script>
+        async function userNameFrontEnd() {
+            const response = await fetch(`http://localhost:5500/userLoggedIn`);
+            const data = await response.json();
+            const userLogFrontend = document.querySelector("#userLoggedIn");
+            userLogFrontend.classList.add('userFrontendName');
+            userLogFrontend.textContent = `Welcome back -  ${data.loggnedUserName}`;
+        }
+        userNameFrontEnd();
+
+
+    </script>
 
 </body>
 

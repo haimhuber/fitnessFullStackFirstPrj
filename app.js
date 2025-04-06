@@ -16,18 +16,19 @@ app.use(cookieparser('secret'));
 const bcrypt = require('bcrypt');
 const { hash } = require('crypto');
 const { url } = require('inspector');
+
+// <-----Global vars----->
 const saltRounds = 10;
 cookieConfig = {
     maxAge: Number(process.env.MAX_AGE) || 120000,
     httpOnly: true,
     signed: true// if we use secret with cookieParser
 };
-
 const port = process.env.PORT || 5500;
+let userNameSignedIn = "";
+let userIdSignedIn = 0;
+// <--------------------------------------------->
 app.use(cors());
-
-
-
 // Middleware for login tests
 app.use((req, res, next) => {
     console.log(req.url);
@@ -115,6 +116,12 @@ app.get('/plan', async (req, res) => {
     }
 });
 
+app.get('/userLoggedIn', async (req, res) => {
+    console.log(userNameSignedIn);
+
+    res.status(200).json({ status: 200, loggnedUserName: userNameSignedIn })
+});
+
 // <---------------------------------Post Mtehod------------------------------------------------------>//
 
 // Login coockie creator
@@ -186,14 +193,15 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const userData = { email, password };
     try {
-        const result = await myRepository.isUserExist(userData); // Connect to DB
-
-        switch (result.status) {
+        const response = await myRepository.isUserExist(userData); // Connect to DB
+        switch (response.status) {
             case 200:
-                const enctypedPassword = await bcrypt.compare(userData.password, result.result.password);
+                const enctypedPassword = await bcrypt.compare(userData.password, response.result.password);
                 console.log(enctypedPassword);
                 if (enctypedPassword) {
-                    return res.status(200).json({ status: 200, result: true });
+                    userIdSignedIn = response.result.id;
+                    userNameSignedIn = response.result.userName;
+                    return res.status(200).json({ status: 200, response: true, userId: response.result.id, userName: response.result.userName });
                 }
                 return res.status(200).json({ status: 200, result: false });
             case 404:

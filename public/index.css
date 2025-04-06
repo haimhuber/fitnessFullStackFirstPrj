@@ -286,6 +286,13 @@ button:hover {
     margin: auto;
 }
 
+.userFrontendName {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: medium;
+    font-weight: 800;
+    color: antiquewhite;
+}
+
 .pIndex {
     color: #191414;
 }

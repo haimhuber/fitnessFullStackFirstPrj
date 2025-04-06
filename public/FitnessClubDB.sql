@@ -433,7 +433,7 @@ CREATE OR ALTER PROCEDURE [dbo].[spIsUserExist]
 @email VARCHAR(255)
 AS	
 BEGIN
-    SELECT id, email, password
+    SELECT id, userName, email, password
     FROM Members 
     WHERE email = @email;
 

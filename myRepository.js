@@ -15,14 +15,12 @@ async function updateUser(userData) {
             .execute('spUpdateUser');
 
         // Check if the row was updated
-        console.log(result);
-
         if (result.rowsAffected[0] === 0) {
             return { message: `User ID ${userData.userId} not found`, status: 404 };
         }
         return { message: `User ID ${userData.userId} updated successfully!`, status: 200 };
     } catch (err) {
-        return { 'Error updating user': err['message'], status: 500 };
+        return { message: err.message, status: 500 };
     }
 };
 
@@ -57,11 +55,9 @@ module.exports.isUserExist = isUserExist;
 
 // Inserting users Data
 async function insertingNewUser(userData) {
-
     try {
         const pool = await connectDb.connectionToSqlDB(); // Connect to DB
 
-        // Execute update query for user ID 1
         const result = await pool.request()
             .input('fullName', userData.fullName)
             .input('userName', userData.userName)
@@ -70,17 +66,19 @@ async function insertingNewUser(userData) {
             .input('dateOfBirth', userData.dateOfBirth)
             .input('password', userData.password)
             .execute('spInsertNewUser');
+        console.log(result.message);
 
-        // Check if the row was updated
+        // Assuming the stored procedure returns something meaningful in rowsAffected
         if (result.rowsAffected[0] === 0) {
-            return { message: `User ID ${userData.userId} not found`, status: 404 };
+            return { message: `User insertion failed`, status: 404 };
         }
+
         return { message: 'User inserted successfully!', status: 200 };
     } catch (err) {
-        console.log({ 'Error updating user': result });
-        return { message: err.message, status: 500 };
+        console.error('Error inserting user:', err); // Corrected the logging
+        return { message: err.message, status: 400 };
     }
-};
+}
 
 module.exports.insertingNewUser = insertingNewUser;
 

@@ -422,8 +422,13 @@ CREATE OR ALTER PROCEDURE [dbo].[spUpdateUser]
 @dateOfBirth DATE
 AS	
 BEGIN
-   INSERT INTO Members(fullName, userName, email, phoneNumber, dateOfBirth, password) 
-		values(@fullName, @userName, @email, @phoneNumber, @dateOfBirth, @password)
+   UPDATE Members
+   set
+   fullName = @fullName,
+   email = @email,
+   phoneNumber = @phoneNumber,
+   dateOfBirth = @dateOfBirth
+  WHERE id = @userId
 
 END
 GO

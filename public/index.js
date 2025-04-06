@@ -135,6 +135,7 @@ async function showAllUsers() {
                             flag = false;
                             udpateUser(updateMemeberTable);
                             window.location.reload();
+                            return;
 
                         }
                     });
@@ -190,11 +191,8 @@ async function udpateUser(dataToUpdate) {
             return;
         }
     }
-    console.log(emptyFiledDetected);
 
     if (!emptyFiledDetected) {
-        console.log(dataFromUser);
-
         try {
             const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
                 method: 'PATCH',
@@ -203,21 +201,22 @@ async function udpateUser(dataToUpdate) {
                 },
                 body: JSON.stringify(dataFromUser),
             });
+            const data = await response.json(); // Get response as text
             console.log(response.status);
-
-            const data = response.status; // Get response as text
-            if (data === 500) {
+            if (data.status === 500) {
                 return alert('Email must be unique');
 
-            } else if (data === 200) {
+            } else if (data.status === 200) {
                 return alert("User updated successfully");
 
-            } else if (data === 404) {
+            } else if (data.status === 404) {
                 return alert("Bad request");
             }
         } catch (error) {
             alert('User updated successfully');
         }
+    } else {
+        return;
     }
 }
 async function sendForm(event) {
@@ -304,17 +303,16 @@ async function signUpUser() {
             body: JSON.stringify(queryToMemeberTable) //  Convert object to JSON string
         });
 
-        const data = await response.text(); // Get response as text
+        const data = await response.json(); // Get response as text
         // console.log(data);
 
-        if (data === "User cannot be added") {
-            console.log("User cannot be insreted");
-            return;
-        } else if (data === "OK") {
+        if (data.status === 400) {
+            return alert(`${data.errorValue} is already exist`);
+        } else if (data.status === 200) {
             alert(`Welcome to our team ${queryToMemeberTable.fullName}! Our staff will reach out shortly`);
             window.location.href = 'http://127.0.0.1:5500/public/login.html'; // Page refresh
-        } else if (data === "Internal server error") {
-            alert("Email or User name is alreay in use please use diffrent email!");
+        } else if (data.status === 500) {
+            alert("Internal server error!");
             return;
         }
 
@@ -414,5 +412,14 @@ window.addEventListener('unload', async function () {
     const response = await fetch(`http://localhost:5500/logout`);
 });
 
+async function userNameFrontEnd() {
+    const response = await fetch(`http://localhost:5500/userLoggedIn`);
+    const data = await response.json();
+    const userLogFrontend = document.querySelector("#userLoggedIn");
+    userLogFrontend.classList.add('userFrontendName');
+    userLogFrontend.textContent = `Welcome back -  ${data.loggnedUserName}`;
+
+}
+userNameFrontEnd();
 
 

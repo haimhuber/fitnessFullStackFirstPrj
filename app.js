@@ -169,20 +169,21 @@ app.post('/signupNewUser', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
         userData.password = hashedPassword;
-
         const result = await myRepository.insertingNewUser(userData); // Connect to DB
-
+        // console.log(result.message);
+        const splited = result.message.split(" ");
+        const finalsplit = splited[splited.length - 1].replace(/[().]/g, '');
         switch (result.status) {
             case 200:
                 console.log(result);
-                return res.status(200).send("OK");
+                return res.status(200).json({ status: 200, message: "OK" });
 
-            case 404:
+            case 400:
                 console.log(result.status);
-                return res.status(404).send("User cannot be added");
+                return res.status(400).json({ status: 400, message: "User cannot be added", errorValue: finalsplit });
 
             case 500:
-                return res.status(500).send("Internal server error");
+                return res.status(500).json({ status: 500, message: "Internal server error" });
         }
     } catch (err) {
         return res.send(err);
@@ -225,6 +226,7 @@ app.patch('/update-user/:userId', async (req, res) => {
 
     try {
         const result = await myRepository.updateUser(userData); // Connect to DB
+        console.log(result.status);
 
         switch (result.status) {
             case 200:

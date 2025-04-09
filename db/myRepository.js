@@ -1,4 +1,3 @@
-const sql = require('mssql');
 const connectDb = require('./db');
 
 async function updateUser(userData) {

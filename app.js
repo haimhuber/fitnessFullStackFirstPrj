@@ -1,6 +1,6 @@
 // Initials
 const express = require('express');
-const myRepository = require('./myRepository');
+const myRepository = require('./db/myRepository');
 const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -12,7 +12,7 @@ const cors = require("cors");
 const cookieparser = require('cookie-parser');
 const { log } = require('console');
 app.use(cookieparser('secret'));
-
+const userRouters = require('./routers/users');
 const bcrypt = require('bcrypt');
 const { hash } = require('crypto');
 const { url } = require('inspector');
@@ -29,39 +29,27 @@ let userNameSignedIn = "";
 let userIdSignedIn = 0;
 // <--------------------------------------------->
 app.use(cors());
-// Middleware for login tests
-app.use((req, res, next) => {
-    console.log(req.url);
 
-    // If loginCookie exists, refresh the session (e.g., update the cookie)
-    if (req.signedCookies.isActive) {
-        console.log({ "Cookie updated": Date.now() });
-        res.cookie('isActive', 'secureValue', cookieConfig);
-    }
-    // If no loginCookie and the user is not on the login or create-my-cookie route
-    if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/signupNewUser') {
-        console.log("You didn't make any action in the last 2 min. Please log again");
-        return res.redirect('/login');
-    }
-    next();  // Continue to the next middleware
-});
+app.use('/user', userRouters);
 
-// Delete cookie
-app.get('/logout', (req, res) => {
-    console.log('Coockie deleted');
-    res.clearCookie('isActive');
-    return res.redirect('/login');
-});
+// // Middleware for login tests
+// app.use((req, res, next) => {
+//     console.log(req.url);
 
-// <-------------------------Pages-------------------------------------------->
-// login Page
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-// signin Page
-app.get('/signup', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'signup.html'));
-});
+//     // If loginCookie exists, refresh the session (e.g., update the cookie)
+//     if (req.signedCookies.isActive) {
+//         console.log({ "Cookie updated": Date.now() });
+//         res.cookie('isActive', 'secureValue', cookieConfig);
+//     }
+//     // If no loginCookie and the user is not on the login or create-my-cookie route
+//     if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/signupNewUser') {
+//         console.log("You didn't make any action in the last 2 min. Please log again");
+
+//         return res.redirect('/login');
+//     }
+//     next();  // Continue to the next middleware
+// });
+
 
 //About Page
 app.get('/about', (req, res) => {
@@ -123,14 +111,6 @@ app.get('/userLoggedIn', async (req, res) => {
 });
 
 // <---------------------------------Post Mtehod------------------------------------------------------>//
-
-// Login coockie creator
-app.post('/createmycookie', (req, res) => {
-    console.log("you creted cookie");
-    res.cookie('isActive', 'secureValue', cookieConfig);
-    res.send({ "You created signed cookie": true });
-});
-
 
 // POST API to Insert Contact Form Data
 app.post('/contact', async (req, res) => {
@@ -259,5 +239,5 @@ app.delete('/deleteUser/:paramId?', async (req, res) => {
 
 // <---------------------------------Listner------------------------------------------------------>//
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+    console.log(`Server listening at http://localhost:${port}/user`);
 });

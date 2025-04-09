@@ -295,7 +295,7 @@ async function signUpUser() {
         }
     }
     try {
-        const response = await fetch('http://localhost:5500/signupNewUser', {
+        const response = await fetch('http://localhost:5500/user/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -333,7 +333,7 @@ async function login() {
         password: document.querySelector("#password").value
     }
     try {
-        const response = await fetch(`http://localhost:5500/login`, {
+        const response = await fetch(`http://localhost:5500/user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

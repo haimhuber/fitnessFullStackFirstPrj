@@ -350,21 +350,7 @@ async function login() {
         } else if (data.status === 404 || data.error === 'User not found') {
             return alert(`Email: ${dataFromUser.email} not found`);
         } else if (data.status === 200 && data.response) {
-            try {
-                const response = await fetch(`http://localhost:5500/createmycookie`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(dataFromUser),
-                });
-                const data = await response.text(); // Get response as text
-                console.log(data);
-                window.location.href = "http://localhost:5500/homePage.html";
-                return;
-            } catch (err) {
-                return err;
-            }
+            window.location.href = "http://localhost:5500/screen/homePage";
         }
         else {
             return alert("Email or Password are wrong");

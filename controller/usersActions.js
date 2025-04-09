@@ -65,6 +65,7 @@ const login = async (req, res) => {
                 const enctypedPassword = await bcrypt.compare(userData.password, response.result.password);
                 if (enctypedPassword) {
                     const token = jwt.sign({ username: response.result.userName }, process.env.JWT_SECRET, { expiresIn: '2m' });
+                    const header = res.setHeader('Authorization', `Bearer ${token}`);
                     res.cookie("token", token);
                     console.log(token);
                     return res.status(200).json({ status: 200, response: true, userId: response.result.id, userName: response.result.userName });

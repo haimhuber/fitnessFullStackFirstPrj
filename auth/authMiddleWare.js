@@ -7,8 +7,10 @@ const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, '../public')));
 
 function authenticateToken(req, res, next) {
-    let token = req.header('Authorization');
-    if (!token) return res.status(401).json({ message: 'Access denied' });
+    let token = req.header('Authorization')?.split(' ')[1] || req.cookies.token;;
+    console.log(token);
+
+    if (!token || !req.cookies.token) return res.redirect('/user/login');
 
     //     --- Dont forget to add JWT_SECRET in .env ---
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -24,7 +26,7 @@ function refreshToken(req, res, next) {
     console.log(req.url);
 
     if (!token && (req.url !== '/login' && req.url !== '/signup')) {
-        return res.redirect('/login');
+        return res.redirect('/user/login');
         // Do nothing
     } else if (!token) {
         console.log("token");
@@ -45,8 +47,11 @@ function refreshToken(req, res, next) {
 };
 module.exports.refreshToken = refreshToken;
 
-function eraseTokenFromCookie(res) {
+function eraseTokenFromCookie(req, res, next) {
     res.clearCookie('token');
+    console.log("Cookie deleted");
+
+    return res.redirect('/user/login');
 };
 
 module.exports.eraseTokenFromCookie = eraseTokenFromCookie;

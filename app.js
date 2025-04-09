@@ -13,6 +13,7 @@ const cookieparser = require('cookie-parser');
 const { log } = require('console');
 app.use(cookieparser('secret'));
 const userRouters = require('./routers/users');
+const screenRouters = require('./routers/screens');
 const bcrypt = require('bcrypt');
 const { hash } = require('crypto');
 const { url } = require('inspector');
@@ -32,23 +33,7 @@ app.use(cors());
 
 app.use('/user', userRouters);
 
-// // Middleware for login tests
-// app.use((req, res, next) => {
-//     console.log(req.url);
-
-//     // If loginCookie exists, refresh the session (e.g., update the cookie)
-//     if (req.signedCookies.isActive) {
-//         console.log({ "Cookie updated": Date.now() });
-//         res.cookie('isActive', 'secureValue', cookieConfig);
-//     }
-//     // If no loginCookie and the user is not on the login or create-my-cookie route
-//     if (!req.signedCookies.isActive && req.url !== '/login' && req.url !== '/createmycookie' && req.url !== '/signupNewUser') {
-//         console.log("You didn't make any action in the last 2 min. Please log again");
-
-//         return res.redirect('/login');
-//     }
-//     next();  // Continue to the next middleware
-// });
+app.use('/screen', screenRouters);
 
 
 //About Page
@@ -239,5 +224,5 @@ app.delete('/deleteUser/:paramId?', async (req, res) => {
 
 // <---------------------------------Listner------------------------------------------------------>//
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}/user`);
+    console.log(`Server listening at http://localhost:${port}/user/login`);
 });

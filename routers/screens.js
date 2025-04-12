@@ -5,6 +5,8 @@ const jwtHandler = require('../auth/authMiddleWare');
 
 // If tokex exist the middleware refresh it
 router.use(jwtHandler.authenticateToken);
+// login Page
+router.get('/login', screenAction.aboutScreen);
 // about Page
 router.get('/about', screenAction.aboutScreen);
 // homepage page

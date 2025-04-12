@@ -23,6 +23,6 @@ router.get('/users', userAction.users);
 
 router.get('/contact', userAction.contact);
 
-router.patch('/update-user/:userId', userAction.contact);
+router.patch('/update-user/:userId', userAction.updateUser);
 
 module.exports = router;

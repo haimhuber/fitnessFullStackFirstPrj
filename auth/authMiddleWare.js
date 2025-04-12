@@ -14,7 +14,7 @@ function authenticateToken(req, res, next) {
     let token = req.header('Authorization')?.split(' ')[1] || req.cookies.token;
     globalToken = token;
     globalCookie = req.cookies.token;
-    console.log(token);
+    // console.log(token);
 
     if (!token || !req.cookies.token) return res.redirect('/user/login');
 

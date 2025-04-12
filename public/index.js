@@ -3,9 +3,8 @@
 // <------------------------------------------------------------------>
 async function showPlanDetalis() {
     try {
-        const response = await fetch(`http://localhost:5500/plan`);
+        const response = await fetch(`http://localhost:5500/user/plan`);
         const data = await response.json();
-        console.log(data["Error getting data"] === false);
         const myDiv = document.querySelector("#class-from-db");
         myDiv.textContent = "";
         if (data["Error getting data"] === false) {
@@ -182,7 +181,7 @@ async function deleteUser(userId) {
 async function udpateUser(dataToUpdate) {
     const dataFromUser = dataToUpdate;
     let emptyFiledDetected = false;
-    console.log(dataFromUser);
+    console.log({ user: dataFromUser });
 
     for (const [key, value] of Object.entries(dataFromUser)) {
         if (!value) {
@@ -310,7 +309,7 @@ async function signUpUser() {
             return alert(`${data.errorValue} is already exist`);
         } else if (data.status === 200) {
             alert(`Welcome to our team ${queryToMemeberTable.fullName}! Our staff will reach out shortly`);
-            window.location.href = 'http://127.0.0.1:5500/public/login.html'; // Page refresh
+            window.location.href = 'http://127.0.0.1:5500/user/login'; // Page refresh
         } else if (data.status === 500) {
             alert("Internal server error!");
             return;
@@ -325,7 +324,7 @@ async function signUpUser() {
 }
 
 function signUp() {
-    window.location.href = "http://localhost:5500/signup.html";
+    window.location.href = "http://localhost:5500/user/signup.html";
 }
 async function login() {
     const dataFromUser = {

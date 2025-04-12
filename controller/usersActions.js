@@ -9,6 +9,9 @@ const path = require('path'); // Helps with file paths
 app.use(express.static(path.join(__dirname, '../public')));
 const myRepository = require('../db/myRepository');
 const bcrypt = require('bcrypt');
+const { log } = require('console');
+let userNameSignedIn = "";
+let userIdSignedIn = 0;
 
 
 
@@ -68,6 +71,8 @@ const login = async (req, res) => {
                     const header = res.setHeader('Authorization', `Bearer ${token}`);
                     res.cookie("token", token);
                     console.log(token);
+                    userNameSignedIn = response.result.userName;
+                    userIdSignedIn = response.result.id;
                     return res.status(200).json({ status: 200, response: true, userId: response.result.id, userName: response.result.userName });
                 }
                 return res.status(200).json({ status: 200, result: false });
@@ -86,4 +91,91 @@ const login = async (req, res) => {
 };
 module.exports.login = login;
 
+// <------------------------------------------------------------------------------------------------------>
+const userLoggedIn = async (req, res) => {
+    res.status(200).json({ status: 200, loggnedUserName: userNameSignedIn })
+};
+module.exports.userLoggedIn = userLoggedIn;
+// <------------------------------------------------------------------------------------------------------>
+
+const plans = async (req, res) => {
+    const result = await myRepository.getAllPlansData();
+    if (result.status === 500) {
+        return res.status(500).send("Internal server error");
+    } else {
+        console.log(result.data);
+
+        return res.send(result.data);
+
+    }
+};
+module.exports.plans = plans;
+// <------------------------------------------------------------------------------------------------------>
+
+const users = async (req, res) => {
+    const result = await myRepository.getAllUsersData();
+
+    if (result.status === 500) {
+        return res.status(500).send("Internal server error");
+    } else {
+        return res.json(result.data);
+
+    }
+};
+module.exports.users = users;
+// <------------------------------------------------------------------------------------------------------>
+
+const contact = async (req, res) => {
+    const { name, email, subject, message } = req.body; // Get data from request body
+    const userData = { name, email, subject, message };
+    console.log(userData);
+
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+        return res.status(400).json({ error: 'All fields are required' });
+    } else {
+        try {
+            const result = await myRepository.formContact(userData); // Connect to DB
+            switch (result.status) {
+                case 200:
+                    return res.status(200).send("OK");
+                case 404:
+                    return res.status(404).send("Bad request");
+                case 500:
+                    return res.status(500).send("Internal server error");
+            }
+        } catch (err) {
+            res.status(500).send(`Something went wrong - ${err}`);
+        }
+    }
+};
+module.exports.contact = contact;
+// <------------------------------------------------------------------------------------------------------>
+
+const updateUser = async (req, res) => {
+    const userData = { fullName, email, phonenumber, dateOfBirth } = req.body;
+    userData['userId'] = req.params.userId;
+
+    try {
+        const result = await myRepository.updateUser(userData); // Connect to DB
+        console.log(result.status);
+
+        switch (result.status) {
+            case 200:
+                res.status(200).send("OK");
+                break;
+            case 404:
+                res.status(404).send("Bad request");
+                break;
+            case 500:
+                res.status(500).send("Something went wrong");
+                break;
+            default:
+                log('default');
+        }
+    } catch (err) {
+        res.status(500).send(`Something went wrong - ${err}`);
+    }
+};
+module.exports.updateUser = updateUser;
 // <------------------------------------------------------------------------------------------------------>

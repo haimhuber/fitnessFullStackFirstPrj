@@ -42,7 +42,7 @@ async function showPlanDetalis() {
 }
 async function showAllUsers() {
     try {
-        const response = await fetch(`http://localhost:5500/users`);
+        const response = await fetch(`http://localhost:5500/user/users`);
         const data = await response.json();
         console.log(data);
         const myDiv = document.querySelector("#class-from-db");
@@ -194,7 +194,7 @@ async function udpateUser(dataToUpdate) {
 
     if (!emptyFiledDetected) {
         try {
-            const response = await fetch(`http://localhost:5500/update-user/${dataFromUser['userId']}`, {
+            const response = await fetch(`http://localhost:5500/user/update-user/${dataFromUser['userId']}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -231,7 +231,7 @@ async function sendForm(event) {
     // Convert formData to URL-encoded string
     const urlEncodedData = new URLSearchParams(formData).toString();
     try {
-        const response = await fetch('http://localhost:5500/contact', {
+        const response = await fetch('http://localhost:5500/user/contact', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded', // Sending as x-www-form-urlencoded
@@ -399,7 +399,7 @@ window.addEventListener('unload', async function () {
 });
 
 async function userNameFrontEnd() {
-    const response = await fetch(`http://localhost:5500/userLoggedIn`);
+    const response = await fetch(`http://localhost:5500/user/userLoggedIn`);
     const data = await response.json();
     const userLogFrontend = document.querySelector("#userLoggedIn");
     userLogFrontend.classList.add('userFrontendName');

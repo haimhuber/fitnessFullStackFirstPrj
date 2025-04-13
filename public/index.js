@@ -130,7 +130,6 @@ async function showAllUsers() {
                     updateButton.addEventListener('click', async () => {
                         let flag = true;
                         if (flag) {
-                            console.log('Sent');
                             flag = false;
                             udpateUser(updateMemeberTable);
                             window.location.reload();
@@ -142,7 +141,6 @@ async function showAllUsers() {
                     deleteButton.addEventListener('click', async () => {
                         let flag = true;
                         if (flag) {
-                            console.log('Sent');
                             flag = false;
                             deleteUser(updateMemeberTable['userId']);
 
@@ -158,8 +156,10 @@ async function showAllUsers() {
 }
 // Delete clicked user by his ID
 async function deleteUser(userId) {
+    console.log({ userId: userId });
+
     try {
-        const response = await fetch(`http://localhost:5500/deleteUser/${userId}`, {
+        const response = await fetch(`http://localhost:5500/user/delete-user/${userId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ async function deleteUser(userId) {
             return;
         }
     } catch (error) {
-        console.log(Error);
+        // console.log(error);
     }
 }
 // Updating user by his ID

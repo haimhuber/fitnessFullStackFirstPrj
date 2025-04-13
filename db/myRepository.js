@@ -83,7 +83,7 @@ module.exports.insertingNewUser = insertingNewUser;
 
 // Inserting users Data
 async function deletingUser(userId) {
-    console.log(userId);
+    console.log({ id: userId });
 
     try {
         const pool = await connectDb.connectionToSqlDB(); // Connect to DB
@@ -93,11 +93,14 @@ async function deletingUser(userId) {
             .query(`DELETE FROM Members WHERE id = ${userId}`);
 
         // Check if the row was updated
+
         if (result.rowsAffected[0] === 0) {
             return { message: `User ID ${userId} not found`, status: 404 };
         }
         return { message: 'User deleted successfully!', status: 200 };
     } catch (err) {
+        console.log(err);
+
         //console.error('Error updating user:', err);
         return { message: err.message, status: 500 };
     }

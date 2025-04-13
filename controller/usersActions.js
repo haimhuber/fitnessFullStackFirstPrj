@@ -93,6 +93,8 @@ module.exports.login = login;
 
 // <------------------------------------------------------------------------------------------------------>
 const userLoggedIn = async (req, res) => {
+    console.log({ user: userNameSignedIn });
+
     res.status(200).json({ status: 200, loggnedUserName: userNameSignedIn })
 };
 module.exports.userLoggedIn = userLoggedIn;
@@ -179,3 +181,15 @@ const updateUser = async (req, res) => {
 };
 module.exports.updateUser = updateUser;
 // <------------------------------------------------------------------------------------------------------>
+
+const deleteUser = async (req, res) => {
+    try {
+        const result = await myRepository.deletingUser(req.params.userId); // Connect to DB
+        res.send(result);
+    } catch (err) {
+        res.send({ "Error": 500 });
+    }
+};
+module.exports.deleteUser = deleteUser;
+// <------------------------------------------------------------------------------------------------------>
+

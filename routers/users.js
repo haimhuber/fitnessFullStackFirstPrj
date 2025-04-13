@@ -25,4 +25,6 @@ router.get('/contact', userAction.contact);
 
 router.patch('/update-user/:userId', userAction.updateUser);
 
+router.delete('/delete-user/:userId', userAction.deleteUser);
+
 module.exports = router;

@@ -349,7 +349,31 @@ async function login() {
         } else if (data.status === 404 || data.error === 'User not found') {
             return alert(`Email: ${dataFromUser.email} not found`);
         } else if (data.status === 200 && data.response) {
-            window.location.href = "http://localhost:5500/screen/homePage";
+            try {
+                const response = await fetch(`http://localhost:5500/verification/mail/haim.huber@il.abb.com`)
+                const verfCode = await response.json();
+                console.log(verfCode);
+
+                if (verfCode.status === 200) {
+                    document.querySelector("#code").classList.remove('hide');
+                    document.querySelector(".login-btn").disabled = true;
+                    document.querySelector("#code").addEventListener("keydown", function (event) {
+                        if (event.key === "Enter") {
+                            const value = event.target.value;
+                            if (Number(value) === verfCode.code) {
+                                alert('Click OK to Home screen');
+                                window.location.href = "http://localhost:5500/screen/homePage";
+                                return;
+                            }
+                            alert('Verification code is incorrect!');
+                        }
+                    });
+                }
+
+            } catch (err) {
+                console.log(err);
+
+            }
         }
         else {
             return alert("Email or Password are wrong");

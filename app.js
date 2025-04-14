@@ -14,6 +14,7 @@ const { log } = require('console');
 app.use(cookieparser('secret'));
 const userRouters = require('./routers/users');
 const screenRouters = require('./routers/screens');
+const emailRouters = require('./routers/mail');
 const bcrypt = require('bcrypt');
 const { hash } = require('crypto');
 const { url } = require('inspector');
@@ -25,6 +26,8 @@ app.use(cors());
 app.use('/user', userRouters);
 
 app.use('/screen', screenRouters);
+
+app.use('/verification', emailRouters);
 
 // <---------------------------------Listner------------------------------------------------------>//
 app.listen(port, () => {

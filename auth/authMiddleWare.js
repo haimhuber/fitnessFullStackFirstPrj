@@ -44,12 +44,12 @@ function refreshToken(req, res, next) {
         }
 
         // Token is valid — refresh it
-        const newToken = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '10m' });
+        const newToken = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '2m' });
 
         res.cookie("token", newToken, {
             httpOnly: true,
             secure: false, // set true if you're using HTTPS
-            maxAge: 10 * 60 * 1000 // 10 minutes
+            maxAge: 2 * 60 * 1000 // 2 minutes
         });
 
         res.setHeader('Authorization', newToken);

@@ -16,8 +16,7 @@ const userRouters = require('./routers/users');
 const screenRouters = require('./routers/screens');
 const emailRouters = require('./routers/mail');
 const bcrypt = require('bcrypt');
-const { hash } = require('crypto');
-const { url } = require('inspector');
+app.use(express.static(path.join(__dirname, '../public')));
 
 const port = process.env.PORT || 5500;
 // <--------------------------------------------->
@@ -31,5 +30,5 @@ app.use('/verification', emailRouters);
 
 // <---------------------------------Listner------------------------------------------------------>//
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}/user/login`);
+    console.log(`Server listening at http://localhost:${port}/screen`);
 });

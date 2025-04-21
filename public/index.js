@@ -1,4 +1,9 @@
-// Global vars 
+// Detecet if window closed - very important!
+window.addEventListener('load', async function () {
+    const response = await fetch(`http://localhost:5500/user/login`);
+    console.log("YES");
+
+});
 
 // <------------------------------------------------------------------>
 async function showPlanDetalis() {
@@ -391,7 +396,6 @@ window.addEventListener('pageshow', async (event) => {
     const targetPage = '/login.html'; // Page to watch
 
     if (window.location.pathname.endsWith(targetPage)) {
-        console.log("Cookie1111");
         if (event.persisted) {
             console.log('Returned via back button (from bfcache) to homePage.html');
 

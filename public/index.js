@@ -328,8 +328,8 @@ async function signUpUser() {
 
 }
 
-function signUp() {
-    window.location.href = "http://localhost:5500/user/signup.html";
+async function signUp() {
+    window.location.href = 'http://localhost:5500/user/signup';
 }
 async function login() {
     const dataFromUser = {
@@ -355,7 +355,7 @@ async function login() {
             return alert(`Email: ${dataFromUser.email} not found`);
         } else if (data.status === 200 && data.response) {
             try {
-                const response = await fetch(`http://localhost:5500/verification/mail/haim.huber@il.abb.com`)
+                const response = await fetch(`http://localhost:5500/verification/mail/haimhuber90@gmail.com`)
                 const verfCode = await response.json();
                 console.log(verfCode);
 
